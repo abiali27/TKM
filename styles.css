@@ -1,0 +1,487 @@
+:root {
+  --primary: #0f5132;
+  --primary-light: #198754;
+  --primary-dark: #0c4530;
+  --secondary: #d4f5d3;
+  --accent: #91d18b;
+  --light: #f8f9fa;
+  --dark: #212529;
+  --text-light: #f8f9fa;
+  --text-dark: #212529;
+  --section-bg: #ffffff;
+  --transition: all 0.3s ease;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-lg: 0 10px 20px rgba(0,0,0,0.1), 0 6px 6px rgba(0,0,0,0.1);
+}
+
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--section-bg);
+  color: var(--text-dark);
+  overflow-x: hidden;
+  line-height: 1.6;
+  scroll-behavior: smooth;
+}
+
+/* Header & Navigation */
+.navbar {
+  background-color: var(--primary) !important;
+  box-shadow: var(--shadow-sm);
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: var(--transition);
+}
+
+.navbar.scrolled {
+  padding: 10px 0;
+  box-shadow: var(--shadow-md);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  color: var(--text-light) !important;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navbar-brand img {
+  height: 50px;
+  transition: var(--transition);
+}
+
+.navbar.scrolled .navbar-brand img {
+  height: 40px;
+}
+
+.nav-link {
+  font-weight: 500;
+  color: var(--text-light) !important;
+  margin: 0 10px;
+  position: relative;
+  transition: var(--transition);
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--accent) !important;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  transition: var(--transition);
+}
+
+.nav-link:hover::after, .nav-link.active::after {
+  width: 100%;
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(135deg, rgba(15, 81, 50, 0.9), rgba(25, 135, 84, 0.9)), 
+              url('https://tolobasecunderabad.com/assets/img/hero-img.png') no-repeat center center/cover;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  color: var(--text-light);
+  position: relative;
+  padding: 120px 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 800;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.hero p {
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  max-width: 700px;
+  margin: 0 auto 30px;
+  opacity: 0.9;
+}
+
+/* Buttons */
+.btn {
+  transition: var(--transition);
+  font-weight: 600;
+  padding: 12px 30px;
+  border-radius: 50px;
+  letter-spacing: 0.5px;
+}
+
+.btn-custom {
+  background-color: var(--accent);
+  color: var(--text-dark);
+  border: none;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-custom:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-custom::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background-color: var(--primary-dark);
+  transition: var(--transition);
+  z-index: -1;
+}
+
+.btn-custom:hover::before {
+  width: 100%;
+}
+
+.quick-btn {
+  background: linear-gradient(to right, var(--primary), var(--primary-light));
+  color: var(--text-light);
+  border-radius: 30px;
+  padding: 12px 20px;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  transition: var(--transition);
+  display: block;
+  margin-bottom: 15px;
+  border: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.quick-btn:hover {
+  background: linear-gradient(to right, var(--primary-light), var(--primary));
+  transform: translateX(5px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Sections */
+.section {
+  padding: 100px 0;
+}
+
+.section-title {
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 40px;
+  position: relative;
+  display: inline-block;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+  width: 50px;
+  height: 4px;
+  background: var(--primary);
+  border-radius: 2px;
+  transition: var(--transition);
+}
+
+.section-title:hover::after {
+  width: 80px;
+}
+
+.bg-light {
+  background-color: var(--secondary);
+}
+
+/* Horizontal Scroll */
+.horizontal-scroll-container {
+  display: flex;
+  overflow-x: auto;
+  padding: 30px 0;
+  gap: 30px;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 30px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.horizontal-scroll-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.horizontal-scroll-container::-webkit-scrollbar-track {
+  background: var(--secondary);
+  border-radius: 10px;
+}
+
+.horizontal-scroll-container::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 10px;
+}
+
+.horizontal-scroll-item {
+  min-width: 280px;
+  height: 250px;
+  background-color: var(--primary);
+  color: var(--text-light);
+  border-radius: 15px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
+  padding: 30px;
+  transition: var(--transition);
+}
+
+.horizontal-scroll-item:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-lg);
+}
+
+.horizontal-scroll-item i {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  color: var(--accent);
+}
+
+/* Cards */
+.card {
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+  box
+  :root {
+  --primary: #0f5132;
+  --primary-light: #198754;
+  --primary-dark: #0c4530;
+  --secondary: #d4f5d3;
+  --accent: #91d18b;
+  --light: #f8f9fa;
+  --dark: #212529;
+  --text-light: #f8f9fa;
+  --text-dark: #212529;
+  --section-bg: #ffffff;
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.15), 0 5px 10px rgba(0,0,0,0.1);
+  --section-padding: 120px;
+}
+
+/* Base Desktop Styles */
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--section-bg);
+  color: var(--text-dark);
+  line-height: 1.6;
+  scroll-behavior: smooth;
+  min-height: 100vh;
+}
+
+/* Desktop Layout Container */
+.container {
+  max-width: 1400px;
+  padding: 0 40px;
+  margin: 0 auto;
+}
+
+/* Enhanced Desktop Navigation */
+.navbar {
+  background-color: var(--primary) !important;
+  padding: 20px 0;
+  box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: var(--transition);
+}
+
+.navbar-brand {
+  font-size: 1.8rem;
+}
+
+.navbar-brand img {
+  height: 60px;
+  transition: var(--transition);
+}
+
+.nav-link {
+  font-size: 1.1rem;
+  padding: 8px 15px !important;
+  margin: 0 12px;
+}
+
+/* Hero Section - Desktop Optimized */
+.hero {
+  min-height: 90vh;
+  padding: 180px 0;
+  background-attachment: fixed;
+}
+
+.hero h1 {
+  font-size: 4rem;
+  margin-bottom: 30px;
+  line-height: 1.2;
+}
+
+.hero p {
+  font-size: 1.5rem;
+  max-width: 800px;
+  margin-bottom: 40px;
+}
+
+/* Desktop Button Enhancements */
+.btn-custom {
+  padding: 15px 40px;
+  font-size: 1.1rem;
+}
+
+/* Section Styling for Desktop */
+.section {
+  padding: var(--section-padding) 0;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  margin-bottom: 50px;
+}
+
+.section-title::after {
+  height: 5px;
+  bottom: -15px;
+}
+
+/* Card Grid for Desktop */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+}
+
+.card {
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.card-img-top {
+  height: 250px;
+}
+
+/* Horizontal Scroller - Desktop Version */
+.horizontal-scroll-container {
+  padding: 40px 0;
+}
+
+.horizontal-scroll-item {
+  min-width: 300px;
+  height: 280px;
+  padding: 40px;
+}
+
+.horizontal-scroll-item i {
+  font-size: 3.5rem;
+}
+
+/* Gallery Grid - Desktop Optimized */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.gallery-img {
+  margin-bottom: 0;
+  height: 250px;
+  object-fit: cover;
+}
+
+/* Footer Desktop Layout */
+.footer-content {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 50px;
+}
+
+/* Member Popup - Desktop Size */
+.popup-content {
+  max-width: 800px;
+  padding: 30px;
+}
+
+/* Desktop-Specific Enhancements */
+@media (min-width: 992px) {
+  /* Smooth parallax effect for hero */
+  .hero {
+    background-position: center 30%;
+  }
+  
+  /* Hover effects only on desktop */
+  .card:hover {
+    transform: translateY(-15px);
+  }
+  
+  .nav-link::after {
+    bottom: 5px;
+  }
+  
+  /* Wider containers for large screens */
+  @media (min-width: 1600px) {
+    .container {
+      max-width: 1500px;
+    }
+  }
+  
+  @media (min-width: 2000px) {
+    .container {
+      max-width: 1800px;
+    }
+    
+    .hero {
+      min-height: 70vh;
+    }
+  }
+}
+
+/* Ultra-Wide Screen Adjustments */
+@media (min-width: 2500px) {
+  :root {
+    --section-padding: 150px;
+  }
+  
+  html {
+    font-size: 18px;
+  }
+  
+  .container {
+    max-width: 2200px;
+  }
+  
+  .hero h1 {
+    font-size: 5rem;
+  }
+}
+
+/* Background Pattern - Subtle on Desktop */
+body::after {
+  background-size: 800px;
+  opacity: 0.02;
+} 
