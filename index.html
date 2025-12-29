@@ -9,19 +9,145 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="./custom.css">
- </head>
+  <style>
+    .btn-get-location {
+      background-color: #ff9800 !important;
+      color: white;
+      border: none;
+      animation: pulse-orange 2s infinite;
+    }
+    .btn-get-location:hover {
+      background-color: #f57c00 !important;
+      color: white;
+    }
+    .btn-completed {
+      background-color: #6c757d !important;
+      color: white;
+      cursor: not-allowed;
+      opacity: 0.65;
+    }
+    .btn-completed:hover {
+      background-color: #6c757d !important;
+      color: white;
+    }
+    @keyframes pulse-orange {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7); }
+      50% { box-shadow: 0 0 0 10px rgba(255, 152, 0, 0); }
+    }
+    .ai-bot {
+      position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px;
+      background: #25D366; border-radius: 50%; display: flex;
+      justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      cursor: pointer; transition: all 0.3s ease; z-index: 1000;
+    }
+    .ai-bot:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+    .robot-face {
+      width: 45px; height: 45px; background: white; border-radius: 50%;
+      position: relative; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; overflow: hidden;
+    }
+    .robot-eyes { display: flex; justify-content: space-between; width: 30px; margin-top: 8px; }
+    .eye { width: 8px; height: 8px; background: #25D366; border-radius: 50%; }
+    .robot-mouth {
+      width: 20px; height: 10px; border-bottom: 3px solid #25D366;
+      border-radius: 0 0 10px 10px; margin-top: 6px; margin-bottom: 8px;
+    }
+    .antenna { position: absolute; top: -12px; width: 3px; height: 10px; background: #25D366; }
+    .antenna::after {
+      content: ''; position: absolute; top: -5px; left: -3px;
+      width: 9px; height: 9px; background: white; border-radius: 50%;
+      border: 2px solid #25D366;
+    }
+    .cheek { position: absolute; width: 6px; height: 6px; background: #f8b5b5; border-radius: 50%; bottom: 12px; }
+    .cheek.left { left: 6px; }
+    .cheek.right { right: 6px; }
+    .pulse { animation: pulse 2s infinite; }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+      70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+    }
+    .insta-grid {
+      margin-bottom: 30px; display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 3fr)); gap: 30px;
+    }
+    .insta-grid img {
+      border-radius: 20px; transition: var(--transition);
+      width: 100%; height: auto; object-fit: cover;
+    }
+    .insta-grid blockquote { max-width: 100%; height: 350px; }
+    .insta-grid img:hover { transform: scale(1.05); }
+    .btn-insta {
+      background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+      color: #ddeedf; border: none; border-radius: 50px; font-weight: 600;
+      padding: 12px 30px; position: relative; overflow: hidden;
+      box-shadow: var(--shadow-md); transition: background 0.3s;
+    }
+    .btn-insta:hover {
+      transform: translateY(-3px); box-shadow: var(--shadow-lg);
+      background: linear-gradient(45deg, #fd1d1d, #e1306c, #c13584, #833ab4, #5851db, #405de6);
+    }
+    .quick-btn {
+      background-color: var(--primary); color: white; border-radius: 8px;
+      padding: 12px 15px; font-weight: 500; transition: all 0.3s;
+      text-align: left; display: flex; align-items: center;
+      border: none; text-decoration: none;
+    }
+    .quick-btn:hover {
+      background-color: var(--primary-dark); transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1); color: white;
+    }
+    .quick-btn i { margin-right: 10px; width: 20px; text-align: center; }
+    .card.blank-event {
+      background-color: #f8f9fa;
+      border: 2px dashed #dee2e6;
+    }
+    .card.blank-event .card-img-top {
+      opacity: 0.3;
+      filter: grayscale(100%);
+    }
+    .card.blank-event .card-body {
+      opacity: 0.5;
+    }
+    #eventsList {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    #eventsList.active {
+      max-height: 1000px;
+    }
+    .event-item {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 15px;
+    }
+    .event-date {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .event-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .event-location {
+      color: #888;
+      font-size: 14px;
+    }
+  </style>
+</head>
 <body>
-<body>
-  </head>
-<body>
-  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container">
       <a class="navbar-brand" href="#">
         <img src="./logo.png" alt="Poona Toloba Logo" loading="lazy">
         Poona Toloba
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -29,25 +155,24 @@
           <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
           <li class="nav-item"><a class="nav-link" href="#events">Events</a></li>
-          <li class="nav-item"><a class="nav-link" href="#gallery">Gallery</a></li>
-        
         </ul>
       </div>
     </div>
   </nav>
- 
-  <!-- Hero Section -->
-<section class="hero" id="home">
-  <div class="container">
-    <div class="hero-content" data-aos="fade-up">
-      <h1>Welcome to Poona Toloba</h1>
-      <p>Serving the community with dedication and unity since 2017</p>
-      <a href="#about" class="btn btn-custom" data-aos="fade-up" data-aos-delay="200">Explore More</a>
-      <a href="#events" class="btn btn-outline-light" data-aos="fade-up" data-aos-delay="300">Upcoming Events</a>
+
+  <section class="hero" id="home">
+    <div class="container">
+      <div class="hero-content" data-aos="fade-up">
+        <h1>Welcome to Poona Toloba</h1>
+        <p>Serving the community with dedication and unity since 2017</p>
+        <a href="#about" class="btn btn-custom" style="background-color:#1b5e20;color:white;">Explore More</a>
+
+      <a href="#events" class="btn btn-custom" style="background-color:#2e7d32;color:white;">Upcoming Events</a>
+
+      </div>
     </div>
-  </div>
-</section>
- <!-- About Section -->
+  </section>
+
   <section id="about" class="section">
     <div class="container">
       <h2 class="section-title text-center" data-aos="fade-up">About Us</h2>
@@ -55,15 +180,12 @@
         <div class="col-lg-8 mx-auto">
           <div class="about-content" data-aos="fade-up" data-aos-delay="100">
             <p class="text-center">Toloba Poona is a vibrant platform for students committed to personal growth and community welfare. We engage in educational, spiritual, and social activities that foster unity and development.</p>
-            <div class="text-center mt-4">
-            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Horizontal Scroll Section -->
   <section class="section bg-light">
     <div class="container">
       <h2 class="section-title text-center" data-aos="fade-up">Our Activities</h2>
@@ -97,689 +219,114 @@
     </div>
   </section>
 
-  <!-- Events Section -->
-  <section id="events" class="section">
-    <div class="container">
-      <h2 class="section-title text-center" data-aos="fade-up">Upcoming Events</h2>
-      <div class="row">
-        <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-          <div class="card h-100">
-            <img src="event image 1.jpg" class="card-img-top" alt="Annual Conference" loading="lazy">
-            <div class="card-body">
-              <h5 class="card-title"> Influenza Vaccination Drive</h5>
-              <p class="card-text">Umoor Sehat and Toloba ul Kulliyatul Mumenoon, Fakhri Mohalla, Poona is organizing an Influenza Vaccination Drive for ALL MUMINEEN
-</p>
-            </div>
-            <div class="card-footer">
-              <div class="d-flex justify-content-between align-items-center">
-                <small class="text-muted"><i class="fas fa-calendar me-2"></i>Sept 7, 2025</small>
-                <a href="#" class="btn btn-sm btn-custom" onclick="window.open('https://forms.gle/yA3CM4bbjaskdcv28')">Register</a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-          <div class="card h-100">
-            <img src="event image 2.jpg" class="card-img-top" alt="Youth Leadership Camp" loading="lazy">
-            <div class="card-body">
-              <h5 class="card-title">Treck at Andharban</h5>
-              <p class="card-text"> Bored with the same old routine? Living the same day again and again?
-Well… hit pause on the monotony and play on adventure!.</p>
-            </div>
-            <div class="card-footer">
-              <div class="d-flex justify-content-between align-items-center">
-                <small class="text-muted"><i class="fas fa-calendar me-2"></i>Sept 21, 2025</small>
-                <a href="#" class="btn btn-sm btn-custom" onclick="window.open('https://forms.gle/uTNB12B1xUqLJLS68')">Register</a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-          <div class="card h-100">
-            <img src="event image cs.jpg" class="card-img-top" alt="Community Service Day" loading="lazy">
-            <div class="card-body">
-              <h5 class="card-title">Community Service Day</h5>
-              <p class="card-text">Volunteer with us to serve the local community through various initiatives including food distribution and educational support.</p>
-            </div>
-            <div class="card-footer">
-              <div class="d-flex justify-content-between align-items-center">
-                <small class="text-muted"><i class="fas fa-calendar me-2"></i>August 5, 2023</small>
-                <a href="#" class="btn btn-sm btn-custom" onclick="window.open('https://docs.google.com/forms/d/1BDF8Q1lBlBJbLlBQ42rjOhnthrICkh_BQFx5iE6KW-k/edit#responses')">Register</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="text-center mt-5">
-        <button id="eventsBtn" class="btn btn-custom">
-          <i class="fas fa-calendar-alt me-2"></i> View Past Events
-        </button>
-        <div id="eventsList" class="events-container">
-          <div class="event-item">
-            <div class="event-date"><i class="far fa-calendar"></i> April 20, 2025</div>
-            <h4 class="event-title">E Waste Drive </h4>
-            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Fakhri Manzil, Pune</div>
-            <p class="event-description">The Event was a perfect e drive </p>
-          </div>
-          <div class="event-item">
-            <div class="event-date"><i class="far fa-calendar"></i> May 25, 2025</div>
-            <h4 class="event-title">Influenza Vsccination Drive</h4>
-            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Fakhri Manzil,Pune</div>
-            <p class="event-description">A Well- planned and Executed influenza vaccination drive.</p>
-          </div>
-          <div class="event-item">
-            <div class="event-date"><i class="far fa-calendar"></i> February 26, 2025</div>
-            <h4 class="event-title">Blood Collection Drive </h4>
-            <div class="event-location"><i class="fas fa-map-marker-alt"></i> Fakhri Manzil</div>
-            <p class="event-description">A well-organized blood colllection drive, focusing on convenience and clear communication.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-<html>
-<head>
-
-  <style>
-        /* Main Bot Container */
-        .ai-bot {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 70px;
-            height: 70px;
-            background: #25D366; /* WhatsApp green */
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-        
-        .ai-bot:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
-        
-        /* Robot Face Design */
-        .robot-face {
-            width: 45px;
-            height: 45px;
-            background: white;
-            border-radius: 50%;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        
-        /* Robot Eyes */
-        .robot-eyes {
-            display: flex;
-            justify-content: space-between;
-            width: 30px;
-            margin-top: 8px;
-        }
-        
-        .eye {
-            width: 8px;
-            height: 8px;
-            background: #25D366;
-            border-radius: 50%;
-        }
-        
-        /* Smiling Mouth */
-        .robot-mouth {
-            width: 20px;
-            height: 10px;
-            border-bottom: 3px solid #25D366;
-            border-radius: 0 0 10px 10px;
-            margin-top: 6px;
-            margin-bottom: 8px;
-        }
-        
-        /* Antenna */
-        .antenna {
-            position: absolute;
-            top: -12px;
-            width: 3px;
-            height: 10px;
-            background: #25D366;
-        }
-        
-        .antenna::after {
-            content: '';
-            position: absolute;
-            top: -5px;
-            left: -3px;
-            width: 9px;
-            height: 9px;
-            background: white;
-            border-radius: 50%;
-            border: 2px solid #25D366;
-        }
-        
-        /* Cheeks for extra cuteness */
-        .cheek {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background: #f8b5b5;
-            border-radius: 50%;
-            bottom: 12px;
-        }
-        
-        .cheek.left {
-            left: 6px;
-        }
-        
-        .cheek.right {
-            right: 6px;
-        }
-        
-        /* Pulsing Animation */
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
-            }
-            70% {
-                box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Your website content here -->
-    
-    <a href="https://wa.me/+91 9309574534" class="ai-bot pulse" target="_blank" title=" Any queries Chat with our us">
-        <div class="robot-face">
-            <div class="antenna"></div>
-            <div class="robot-eyes">
-                <div class="eye"></div>
-                <div class="eye"></div>
-            </div>
-            <div class="robot-mouth"></div>
-            <div class="cheek left"></div>
-            <div class="cheek right"></div>
-        </div>
-    </a>
-</body>
-</html>
-  
-      <!-- Gallery Section -->
-  <section id="gallery" class="section bg-light">
-    <div class="container">
-      <h2 class="section-title text-center" data-aos="fade-up">Gallery</h2>
-      <div class="row">
-        <div class="col-md-4" data-aos="zoom-in">
-          <img src="WhatsApp Image 1.jpg" class="img-fluid gallery-img" alt="Community Gathering" loading="lazy">
-        </div>
-        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
-          <img src="WhatsApp Image 2.jpg" class="img-fluid gallery-img" alt="Educational Workshop" loading="lazy">
-        </div>
-        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
-          <img src="WhatsApp Image 3.jpg" class="img-fluid gallery-img" alt="Youth Camp" loading="lazy">
-        </div>
-        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
-          <img src="WhatsApp Image 4.jpg" class="img-fluid gallery-img" alt="Volunteer Work" loading="lazy">
-        </div>
-        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="400">
-          <img src="WhatsApp Image 5.jpg" class="img-fluid gallery-img" alt="Community Service" loading="lazy">
-        </div>
-        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="500">
-          <img src="https://images.unsplash.com/photo-1544396821-4dd40b938ad3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1173&q=80" class="img-fluid gallery-img" alt="Group Discussion" loading="lazy">
-        </div>
-      </div>
-      <div class="text-center mt-4">
-    
-      </div>
-    </div>
-  </section>
-<!-- Instagram Section -->
-<section class="section">
+ <section id="events" class="section">
   <div class="container">
-    <div class="row">
-      <div class="col-lg-8 mx-auto">
-        <h2 class="section-title">Follow Us on Instagram</h2>
-        <div class="d-flex align-items-center mb-4">
-          <i class="fab fa-instagram fa-lg me-2" style="color: #E1306C;"></i>
-          <span class="username">@toloba_punefakhri</span>
-        </div>
-        <div class="row insta-grid">
-          <div class="col-6 col-md-4">
-            <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/DMIlZp-JIzr/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; padding:0; width:100%; height:400px;">
-              <div style="padding:16px;">
-                <a href="https://www.instagram.com/p/DMIlZp-JIzr/?utm_source=ig_embed&amp;utm_campaign=loading" style="background:#FFFFFF; line-height:0; padding:0 0; text-align:center; text-decoration:none; width:100%;" target="_blank">
-                  
-                </a>
-              </div>
-            </blockquote>
-            <script async src="//www.instagram.com/embed.js"></script>
-          </div>
-          <div class="col-6 col-md-4">
-            <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/DHXhhNENOoK/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; padding:0; width:100%; height:400px;">
-              <div style="padding:16px;">
-                <a href="https://www.instagram.com/p/DHXhhNENOoK/?utm_source=ig_embed&amp;utm_campaign=loading" style="background:#FFFFFF; line-height:0; padding:0 0; text-align:center; text-decoration:none; width:100%;" target="_blank">
-                
-                </a>
-              </div>
-            </blockquote>
-            <script async src="//www.instagram.com/embed.js"></script>
-          </div>
-          <div class="col-6 col-md-4">
-            <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/DDKFf7Ht5GW/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; padding:0; width:100%; height:400px;">
-              <div style="padding:16px;">
-                <a href="https://www.instagram.com/p/DDKFf7Ht5GW/?utm_source=ig_embed&amp;utm_campaign=loading" style="background:#FFFFFF; line-height:0; padding:0 0; text-align:center; text-decoration:none; width:100%;" target="_blank">
-                
-                </a>
-              </div>
-            </blockquote>
-            <script async src="//www.instagram.com/embed.js"></script>
-          </div>
-          <div class="col-6 col-md-4">
-            <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/DKL9vbOsMj1/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; padding:0; width:100%; height:400px;">
-              <div style="padding:16px;">
-                <a href="https://www.instagram.com/p/DKL9vbOsMj1/?utm_source=ig_embed&amp;utm_campaign=loading" style="background:#FFFFFF; line-height:0; padding:0 0; text-align:center; text-decoration:none; width:100%;" target="_blank">
-                
-                </a>
-              </div>
-            </blockquote>
-            <script async src="//www.instagram.com/embed.js"></script>
-          </div>
-        </div>
-        <div class="text-center mt-4">
-          <a href="https://www.instagram.com/toloba_punefakhri?igsh=MWIwdHQyYjg3N251" target="_blank" class="btn btn-insta">
-            <i class="fab fa-instagram me-2"></i> Follow Us
-          </a>
-        </div>
-      </div>
+    <h2 class="section-title text-center">Upcoming Events</h2>
+
+    <div class="row" id="upcomingEventsContainer">
+      <p class="text-center">Loading events...</p>
     </div>
+
+    <div class="text-center mt-4">
+      <button id="eventsBtn" class="btn btn-custom">
+        <i class="fas fa-calendar-alt me-2"></i> View Past Events
+      </button>
+    </div>
+
+    <div id="eventsList" class="mt-4"></div>
   </div>
 </section>
 
-<style>
-/* Instagram Section */
-.insta-grid {
-  margin-bottom: 30px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 3fr)); /* Adjusted min width */
-  gap: 30px; /* Reduced space between posts */
-}
 
-.insta-grid img {
-  border-radius: 20px;
-  transition: var(--transition);
-  width: 100%;
-  height: auto; /* Ensure height adjusts automatically */
-  object-fit: cover; /* Maintain aspect ratio without distortion */
-}
+  <section class="section">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <h2 class="section-title">Follow Us on Instagram</h2>
+          <div class="d-flex align-items-center mb-4">
+            <i class="fab fa-instagram fa-lg me-2" style="color: #E1306C;"></i>
+            <span class="username">@toloba_punefakhri</span>
+          </div>
+       <div class="row insta-grid">
 
-.insta-grid blockquote {
-  max-width: 100%; /* Ensure blockquote does not exceed container */
-  height: 350px; /* Set a fixed height for uniformity */
-}
+  <div class="col-6 col-md-4">
+    <blockquote class="instagram-media"
+      data-instgrm-permalink="https://www.instagram.com/p/DMIlZp-JIzr/"
+      data-instgrm-version="14"
+      style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 10px rgba(0,0,0,0.15); margin:0; padding:0; width:100%; height:400px;">
+    </blockquote>
+  </div>
 
-.insta-grid img:hover {
-  transform: scale(1.05);
-}
+  <div class="col-6 col-md-4">
+    <blockquote class="instagram-media"
+      data-instgrm-permalink="https://www.instagram.com/p/DHXhhNENOoK/"
+      data-instgrm-version="14"
+      style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 10px rgba(0,0,0,0.15); margin:0; padding:0; width:100%; height:400px;">
+    </blockquote>
+  </div>
 
-.btn-insta {
-  background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
-  color: #ddeedf;
-  border: none;
-  border-radius: 50px;
-  font-weight: 600;
-  padding: 12px 30px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-  transition: background 0.3s; /* Add transition for background change */
-}
+  <div class="col-6 col-md-4">
+    <blockquote class="instagram-media"
+      data-instgrm-permalink="https://www.instagram.com/p/DDKFf7Ht5GW/"
+      data-instgrm-version="14"
+      style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 10px rgba(0,0,0,0.15); margin:0; padding:0; width:100%; height:400px;">
+    </blockquote>
+  </div>
 
-.btn-insta:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
-  background: linear-gradient(45deg, #fd1d1d, #e1306c, #c13584, #833ab4, #5851db, #405de6); /* New background gradient on hover */
-}
-</style>
+  <div class="col-6 col-md-4">
+    <blockquote class="instagram-media"
+      data-instgrm-permalink="https://www.instagram.com/reel/DP_gH2fEzjq/"
+      data-instgrm-version="14"
+      style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 10px rgba(0,0,0,0.15); margin:0; padding:0; width:100%; height:400px;">
+    </blockquote>
+  </div>
 
+</div>
 
-<section id="contact" class="section bg-light">
+       
+          <div class="text-center mt-4">
+            <a href="https://www.instagram.com/toloba_punefakhri?igsh=MWIwdHQyYjg3N251" target="_blank" class="btn btn-insta">
+              <i class="fab fa-instagram me-2"></i> Follow Us
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="section bg-light">
     <div class="container">
       <div class="row">
         <div class="col-lg-6 mx-auto">
           <h2 class="section-title text-center">Quick Tabs</h2>
           <div class="d-grid gap-2">
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSct1QYPfq4O_hBHuBxbDZP-K43IkjaM31gEySvq8ypXHzXzNQ/viewform" 
-               class="btn quick-btn" target="_blank">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSct1QYPfq4O_hBHuBxbDZP-K43IkjaM31gEySvq8ypXHzXzNQ/viewform" class="btn quick-btn" target="_blank">
               <i class="fas fa-user-plus me-2"></i> New Member Registration
             </a>
-            
-            <a href="#" class="btn quick-btn" id="showMembersBtn">
-              <i class="fas fa-users me-2"></i> Members Directory
-            </a>
-            
-            <a href="https://acrobat.adobe.com/id/urn:aaid:sc:AP:a8d92116-a224-45b0-9bfb-3157b6a440e1" 
-               class="btn quick-btn" target="_blank">
+            <a href="https://acrobat.adobe.com/id/urn:aaid:sc:AP:1198845b-a830-495b-9254-1d4a5bf79d0f" class="btn quick-btn" target="_blank">
               <i class="fas fa-file-alt me-2"></i> Poona Toloba Report
             </a>
-            
-            <a href="https://www.its52.com/Login.aspx?OneLogin=TOLOBA" 
-               class="btn quick-btn" target="_blank">
+            <a href="https://www.its52.com/Login.aspx?OneLogin=TOLOBA" class="btn quick-btn" target="_blank">
               <i class="fas fa-globe me-2"></i> Daerat Toloba Website
             </a>
-            
-            <a href="https://play.google.com/store/apps/details?id=com.tkmi" 
-               class="btn quick-btn" target="_blank">
+            <a href="https://play.google.com/store/apps/details?id=com.tkmi" class="btn quick-btn" target="_blank">
               <i class="fas fa-mobile-alt me-2"></i> Daerat Toloba Mobile App
             </a>
-        
-            
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfWzFLA8J1T_XPJPd8Gynra7KUic6fOTWpicMhk8EdIc9A2ZQ/viewform?pli=1" 
-               class="btn quick-btn" target="_blank">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfWzFLA8J1T_XPJPd8Gynra7KUic6fOTWpicMhk8EdIc9A2ZQ/viewform?pli=1" class="btn quick-btn" target="_blank">
               <i class="fas fa-shopping-cart me-2"></i> Order Koti
             </a>
-             <a href="https://bit.ly/poonastudents" 
-               class="btn quick-btn" target="_blank">
-              <i class="fas fa-user-plus me-2"></i> Student Facilities
+            <a href="https://bit.ly/poonastudents" class="btn quick-btn" target="_blank">
+              <i class="fas fa-user-plus me-2"></i> Toloba Student Facilitation
             </a>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdpeQI_mmH2zOqFDK7Psv3SjwShUi_gqP_SLDE1D2W1yUSS_Q/viewform" 
-               class="btn quick-btn" target="_blank">
-              <i class="fas fa-file-alt me-2"></i> Join  Toloba Band 
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSdpeQI_mmH2zOqFDK7Psv3SjwShUi_gqP_SLDE1D2W1yUSS_Q/viewform" class="btn quick-btn" target="_blank">
+              <i class="fas fa-file-alt me-2"></i> Join Toloba Band
             </a>
           </div>
         </div>
       </div>
     </div>
-  
-    <!-- Members Popup -->
-    <div class="popup-overlay" id="membersPopup">
-      <div class="popup-content">
-        <div class="popup-header">
-          <h3 class="popup-title">Members Directory</h3>
-          <button class="close-btn" id="closeMembersBtn">&times;</button>
-        </div>
-        <input type="text" class="search-box" placeholder="Search members by name or role..." id="memberSearch">
-        <ul class="member-list" id="memberList">
-          <!-- Members will be added here dynamically -->
-        </ul>
-      </div>
-    </div>
-</section>
+  </section>
 
-<style>
-  /* Member Popup Styles */
-  .popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0,0,0,0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s;
-  }
-  
-  .popup-overlay.active {
-    opacity: 1;
-    visibility: visible;
-  }
-  
-  .popup-content {
-    background-color: white;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 600px;
-    max-height: 80vh;
-    overflow-y: auto;
-    padding: 20px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-    transform: translateY(20px);
-    transition: all 0.3s;
-  }
-  
-  .popup-overlay.active .popup-content {
-    transform: translateY(0);
-  }
-  
-  .popup-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .popup-title {
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--primary);
-    margin: 0;
-  }
-  
-  .close-btn {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: #666;
-  }
-  
-  /* Member List Styles */
-  .member-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .member-item {
-    display: flex;
-    align-items: center;
-    padding: 12px 15px;
-    border-bottom: 1px solid #f0f0f0;
-    transition: background-color 0.2s;
-  }
-  
-  .member-item:hover {
-    background-color: #f9f9f9;
-  }
-  
-  .member-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #e9ecef;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 15px;
-    color: var(--primary);
-    font-weight: 600;
-  }
-  
-  .member-info {
-    flex: 1;
-    text-align: left;
-  }
-  
-  .member-name {
-    font-weight: 500;
-    margin: 0;
-    color: #333;
-  }
-  
-  .member-role {
-    font-size: 12px;
-    color: #666;
-    margin: 3px 0 0;
-  }
-  
-  .search-box {
-    width: 100%;
-    padding: 10px 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    font-family: 'Poppins', sans-serif;
-  }
-  
-  /* Quick Links Button Styles */
-  .quick-btn {
-    background-color: var(--primary);
-    color: white;
-    border-radius: 8px;
-    padding: 12px 15px;
-    font-weight: 500;
-    transition: all 0.3s;
-    text-align: left;
-    display: flex;
-    align-items: center;
-    border: none;
-    text-decoration: none;
-  }
-  
-  .quick-btn:hover {
-    background-color: var(--primary-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  }
-  
-  .quick-btn i {
-    margin-right: 10px;
-    width: 20px;
-    text-align: center;
-  }
-</style>
-
-<script>
-  
-  const members = [
-    { id: 1, name: "Ebrahim Dewaswala", role: "Treasurer", initial: "E" },
-    { id: 2, name: "Mohammed Dilawar", role: "Secretary", initial: "M" },
-    { id: 3, name: "Mufaddal Hirani", role: "Joint Secretary", initial: "M" },
-    { id: 4, name: "Musatafa Nandervawala", role: "Admin", initial: "M" },
-    { id: 5, name: "Murtaza Godhrawala", role: "Member", initial: "M" },
-    { id: 6, name: "Aliasgar Primaswala", role: "Member", initial: "A" },
-    { id: 7, name: "Murtaza Lokhandwala", role: "Member", initial: "M" },
-    { id: 8, name: "Abiali Saifee", role: "Member", initial: "A" },
-    { id: 9, name: "Burhanuddin Bootwala", role: "Member", initial: "B" },
-    { id: 10, name: "Kutbuddin Primus", role: "Member", initial: "K" },
-    { id: 11, name: "Murtaza Bharmal", role: "Member", initial: "M" },
-    { id: 12, name: "Taha Bhinderwala", role: "Member", initial: "T" },
-    { id: 13, name: "Burhanuddin Poonawala", role: "Member", initial: "B" },
-    { id: 14, name: "Taher Rampurawala", role: "Member", initial: "T" },
-    { id: 15, name: "Adnan Bawaji", role: "Member", initial: "A" },
-    { id: 16, name: "Mohammed Prarapgarhwala", role: "Member", initial: "M" },
-    { id: 17, name: "Adnan Jamnagarwala", role: "Member", initial: "A" },
-    { id: 18, name: "Taha Dahodwala", role: "Member", initial: "T" },
-    { id: 19, name: "Aliasgar Husainy", role: "Member", initial: "A" },
-    { id: 20, name: "Hussain Godhrawala", role: "Member", initial: "H" },
-    { id: 21, name: "Burhanuddin Dama", role: "Member", initial: "B" },
-    { id: 22, name: "Taher Lokhandwala", role: "Member", initial: "T" },
-    { id: 23, name: "Hussain Manasawala", role: "Member", initial: "H" },
-    { id: 24, name: "Mustafa Jawarwala", role: "Member", initial: "M" },
-    { id: 25, name: "Hasan Khanwala", role: "Member", initial: "H" },
-    { id: 26, name: "Qasim Jamali", role: "Member", initial: "Q" },
-    { id: 27, name: "Taher Chopdawala", role: "Member", initial: "T" },
-    { id: 28, name: "Qaidjohar Dama", role: "Member", initial: "Q" },
-    { id: 29, name: "Mustufa Kalabhai", role: "Member", initial: "M" },
-    { id: 30, name: "Abbas Madhvaswala", role: "Member", initial: "A" },
-    { id: 31, name: "Hussain Salumber", role: "Member", initial: "H" },
-    { id: 32, name: "Hussain Trivedi", role: "Member", initial: "H" },
-    { id: 33, name: "Musatafa Ghodnadiwala", role: "Admin", initial: "M" },
-    { id: 34, name: "Aliakber Sarodawala", role: "Member", initial: "A" },
-    { id: 35, name: "Murtaza Patanwala", role: "Member", initial: "M" },
-    { id: 36, name: "Shabbir Sohagpurwala", role: "Joint Secretary", initial: "S" },
-    { id: 37, name: "Yusuf Motorwala", role: "Member", initial: "Y" },
-    { id: 38, name: "Aziz Salumber", role: "Member", initial: "A" },
-    { id: 39, name: "Abbas Salumber", role: "Member", initial: "A" },
-    { id: 40, name: "Qusai Ghia", role: "Member", initial: "Q" },
-    { id: 41, name: "Mohammad Vohra", role: "Member", initial: "M" },
-    // ... (rest of your member data)
-  ];
-
-  // DOM elements
-  const membersPopup = document.getElementById('membersPopup');
-  const showMembersBtn = document.getElementById('showMembersBtn');
-  const closeMembersBtn = document.getElementById('closeMembersBtn');
-  const memberList = document.getElementById('memberList');
-  const memberSearch = document.getElementById('memberSearch');
-
-  // Show members popup
-  showMembersBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    membersPopup.classList.add('active');
-    renderMembers(members);
-  });
-
-  // Close members popup
-  closeMembersBtn.addEventListener('click', function() {
-    membersPopup.classList.remove('active');
-  });
-
-  // Search functionality
-  memberSearch.addEventListener('input', function() {
-    const searchTerm = this.value.toLowerCase();
-    const filteredMembers = members.filter(member => 
-      member.name.toLowerCase().includes(searchTerm) || 
-      member.role.toLowerCase().includes(searchTerm)
-    );
-    renderMembers(filteredMembers);
-  });
-
-  // Render members list
-  function renderMembers(membersToRender) {
-    memberList.innerHTML = '';
-    
-    if (membersToRender.length === 0) {
-      memberList.innerHTML = '<li class="member-item">No members found matching your search</li>';
-      return;
-    }
-    
-    membersToRender.forEach(member => {
-      const li = document.createElement('li');
-      li.className = 'member-item';
-      li.innerHTML = `
-        <div class="member-avatar">${member.initial}</div>
-        <div class="member-info">
-          <h4 class="member-name">${member.name}</h4>
-          <p class="member-role">${member.role}</p>
-        </div>
-      `;
-      memberList.appendChild(li);
-    });
-  }
-
-  // Close popup when clicking outside
-  membersPopup.addEventListener('click', function(e) {
-    if (e.target === this) {
-      this.classList.remove('active');
-    }
-  });
-
-  // Initialize with all members
-  renderMembers(members);
-</script>
-
-  <!-- Footer -->
   <footer>
     <div class="container">
       <div class="footer-content">
@@ -790,10 +337,7 @@ Well… hit pause on the monotony and play on adventure!.</p>
           </div>
           <p>Empowering students and serving the community since 2017 through education, spirituality, and social initiatives.</p>
           <div class="social-links">
-            
-            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            
-            
+            <a href="https://www.instagram.com/toloba_punefakhri" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
           </div>
         </div>
         <div class="footer-links">
@@ -802,17 +346,20 @@ Well… hit pause on the monotony and play on adventure!.</p>
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About Us</a></li>
             <li><a href="#events">Events</a></li>
-            <li><a href="#gallery">Gallery</a></li>
-            
           </ul>
         </div>
-        <div class="footer-contact>
-          <h3>Contact Us </h3>
+        <div class="footer-contact">
+          <h3>Contact Us</h3>
           <ul>
             <li><i class="fas fa-map-marker-alt me-2"></i> Fakhri Manzil, Pune, Maharashtra</li>
             <li><i class="fas fa-phone me-2"></i> +91 9309574534</li>
             <li><i class="fas fa-envelope me-2"></i> info@poonatoloba.org</li>
           </ul>
+          <div class="footer-location-btn text-end">
+            <button onclick="openFooterLocation()">
+              <i class="fas fa-map-marker-alt me-2"></i> Get Location
+            </button>
+          </div>
         </div>
       </div>
       <div class="copyright">
@@ -821,56 +368,658 @@ Well… hit pause on the monotony and play on adventure!.</p>
     </div>
   </footer>
 
-  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script async src="//www.instagram.com/embed.js"></script>
   
   <script>
-    // Initialize AOS animation
-    AOS.init({
-      duration: 800,
-      easing: 'ease-in-out',
-      once: true
-    });
+    AOS.init({ duration: 800, easing: 'ease-in-out', once: true });
     
-    // Navbar scroll effect
     window.addEventListener('scroll', function() {
       const navbar = document.querySelector('.navbar');
-      if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
-      } else {
-        navbar.classList.remove('scrolled');
-      }
+      if (window.scrollY > 50) navbar.classList.add('scrolled');
+      else navbar.classList.remove('scrolled');
     });
     
-    // Events list toggle
-    const eventsBtn = document.getElementById('eventsBtn');
-    const eventsList = document.getElementById('eventsList');
-    
-    eventsBtn.addEventListener('click', function() {
-      eventsList.classList.toggle('active');
-      eventsBtn.innerHTML = eventsList.classList.contains('active') ? 
-        '<i class="fas fa-times me-2"></i> Close Events' : 
-        '<i class="fas fa-calendar-alt me-2"></i> View Past Events';
-    });
-    
-    // Smooth scrolling for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
         e.preventDefault();
-        
         const targetId = this.getAttribute('href');
         if (targetId === '#') return;
-        
         const targetElement = document.querySelector(targetId);
         if (targetElement) {
-          window.scrollTo({
-            top: targetElement.offsetTop - 80,
-            behavior: 'smooth'
-          });
+          window.scrollTo({ top: targetElement.offsetTop - 80, behavior: 'smooth' });
         }
       });
     });
+
+    function openFooterLocation() {
+      window.open("https://www.google.com/maps?q=Fakhri+Manzil+Pune", "_blank");
+    }
+
+    // ========== EVENTS SYSTEM ==========
+    const EVENTS_API = "https://sheetdb.io/api/v1/7yce9hq14amiv";
+
+    console.log("Fetching events from API...");
+    
+    fetch(EVENTS_API)
+      .then(res => {
+        console.log("API Response status:", res.status);
+        return res.json();
+      })
+      .then(data => {
+        console.log("=== RAW DATA FROM SHEET ===");
+        console.log(data);
+        console.log("Number of rows:", data.length);
+        
+        const upcoming = [];
+        const past = [];
+
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        console.log("Today's date:", today);
+
+        data.forEach((event, index) => {
+          console.log(`\n--- Event ${index + 1} ---`);
+          console.log("Raw event data:", event);
+          
+          // Skip empty rows
+          if (!event.date || !event.title) {
+            console.log("⚠️ Skipping - missing date or title");
+            return;
+          }
+          
+          // Parse date - handle multiple formats
+          let eventDate;
+          if (event.date.includes('/')) {
+            // Format: DD/MM/YYYY
+            const parts = event.date.split('/');
+            eventDate = new Date(parts[2], parts[1] - 1, parts[0]);
+          } else if (event.date.includes('-')) {
+            // Format: YYYY-MM-DD
+            eventDate = new Date(event.date);
+          } else {
+            eventDate = new Date(event.date);
+          }
+          
+          console.log(`Event: "${event.title}"`);
+          console.log(`Date string: "${event.date}"`);
+          console.log(`Parsed date: ${eventDate}`);
+          console.log(`Is future?: ${eventDate >= today}`);
+          
+          if (eventDate >= today) {
+            upcoming.push(event);
+            console.log("✅ Added to UPCOMING");
+          } else {
+            past.push(event);
+            console.log("📅 Added to PAST");
+          }
+        });
+
+        console.log("\n=== SUMMARY ===");
+        console.log("Upcoming events:", upcoming.length, upcoming);
+        console.log("Past events:", past.length, past);
+
+        renderUpcomingEvents(upcoming);
+        renderPastEvents(past);
+      })
+      .catch(err => {
+        console.error("❌ Event loading failed:", err);
+        document.getElementById("upcomingEventsContainer").innerHTML = 
+          `<p class="text-center text-danger">Error loading events. Please try again later.</p>`;
+      });
+
+    function renderUpcomingEvents(events) {
+      const container = document.getElementById("upcomingEventsContainer");
+      container.innerHTML = "";
+
+      if (events.length === 0) {
+        container.innerHTML = `
+          <div class="col-md-4 mb-4" data-aos="fade-up">
+            <div class="card h-100 blank-event">
+              <img src="https://via.placeholder.com/400x250?text=No+Events" class="card-img-top" alt="No Events">
+              <div class="card-body">
+                <h5 class="card-title">No Upcoming Events</h5>
+                <p class="card-text">Check back soon for new events and activities!</p>
+              </div>
+              <div class="card-footer d-flex justify-content-between align-items-center">
+                <small class="text-muted">
+                  <i class="fas fa-calendar me-1"></i> Coming Soon
+                </small>
+              </div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      events.forEach((event, index) => {
+        container.innerHTML += `
+          <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="${index * 100}">
+            <div class="card h-100">
+              <img src="${event.image}" class="card-img-top" alt="${event.title}">
+              <div class="card-body">
+                <h5 class="card-title">${event.title}</h5>
+                <p class="card-text">${event.description}</p>
+              </div>
+              <div class="card-footer d-flex justify-content-between align-items-center">
+                <small class="text-muted">
+                  <i class="fas fa-calendar me-1"></i>
+                  ${event.dateDisplay || formatDate(event.date)}
+                </small>
+
+                ${
+                  isEventNear(event.date)
+                    ? `<button class="btn btn-sm btn-get-location"
+                         onclick="openMap(${event.lat}, ${event.lng})">
+                         Get Location
+                       </button>`
+                    : `<a href="${event.registerLink}" target="_blank"
+                         class="btn btn-sm btn-custom">
+                         Register
+                       </a>`
+                }
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function renderPastEvents(events) {
+      const container = document.getElementById("eventsList");
+      container.innerHTML = "";
+
+      if (events.length === 0) {
+        container.innerHTML = `<p class="text-center">No past events</p>`;
+        return;
+      }
+
+      container.innerHTML = events.map(event => `
+        <div class="event-item mb-3">
+          <div class="event-date">
+            <i class="far fa-calendar"></i> ${formatDate(event.date)}
+          </div>
+          <h4 class="event-title">${event.title}</h4>
+          <div class="event-location">
+            <i class="fas fa-map-marker-alt"></i>
+            ${event.location || "Fakhri Manzil, Pune"}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function isEventNear(date) {
+      const diff = (new Date(date) - new Date()) / (1000 * 60 * 60 * 24);
+      return diff <= 1 && diff >= 0;
+    }
+
+    function formatDate(date) {
+      return new Date(date).toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
+    }
+
+    function openMap(lat, lng) {
+      window.open(
+        `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`,
+        "_blank"
+      );
+    }
+
+    const eventsBtn = document.getElementById("eventsBtn");
+    const eventsList = document.getElementById("eventsList");
+
+    eventsBtn.addEventListener("click", () => {
+      eventsList.classList.toggle("active");
+      eventsBtn.innerHTML = eventsList.classList.contains("active")
+        ? '<i class="fas fa-times me-2"></i> Close Events'
+        : '<i class="fas fa-calendar-alt me-2"></i> View Past Events';
+    });
   </script>
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const EVENTS_API = "https://sheetdb.io/api/v1/3d0bclw7470ao";
+
+  const upcomingContainer = document.getElementById("upcomingEventsContainer");
+  const pastContainer = document.getElementById("eventsList");
+  const toggleBtn = document.getElementById("eventsBtn");
+
+  fetch(EVENTS_API)
+    .then(res => res.json())
+    .then(data => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const upcoming = [];
+      const past = [];
+
+      data.forEach(event => {
+        if (!event.date || !event.title) return;
+
+        let eventDate;
+        if (event.date.includes("/")) {
+          const [dd, mm, yyyy] = event.date.split("/");
+          eventDate = new Date(yyyy, mm - 1, dd);
+        } else {
+          eventDate = new Date(event.date);
+        }
+
+        if (eventDate >= today) {
+          upcoming.push(event);
+        } else {
+          past.push(event);
+        }
+      });
+
+      renderUpcoming(upcoming);
+      renderPast(past);
+    })
+    .catch(err => {
+      console.error(err);
+      upcomingContainer.innerHTML =
+        `<p class="text-danger text-center">Failed to load events</p>`;
+    });
+
+  // ================== UPCOMING ==================
+  function renderUpcoming(events) {
+    upcomingContainer.innerHTML = "";
+
+    if (events.length === 0) {
+      upcomingContainer.innerHTML = `
+        <div class="col-md-4">
+          <div class="card blank-event">
+            <img src="https://via.placeholder.com/400x250?text=No+Upcoming+Events" class="card-img-top">
+            <div class="card-body text-center">
+              <h5>No Upcoming Events</h5>
+            </div>
+          </div>
+        </div>`;
+      return;
+    }
+
+    events.forEach((event, i) => {
+      upcomingContainer.innerHTML += `
+        <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="${i * 100}">
+          <div class="card h-100">
+            <img src="${event.image || 'https://via.placeholder.com/400x250'}" class="card-img-top">
+            <div class="card-body">
+              <h5>${event.title}</h5>
+              <p>${event.description || ""}</p>
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center">
+              <small>
+                <i class="fas fa-calendar"></i>
+                ${formatDate(event.date)}
+              </small>
+
+              ${
+                isEventNear(event.date)
+                  ? `<button class="btn btn-sm btn-get-location"
+                       onclick="openMap(${event.lat}, ${event.lng})">
+                       Get Location
+                     </button>`
+                  : `<a href="${event.registerLink || '#'}" 
+                       class="btn btn-sm btn-custom" target="_blank">
+                       Register
+                     </a>`
+              }
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  // ================== PAST EVENTS ==================
+  function renderPast(events) {
+    pastContainer.innerHTML = "";
+
+    if (events.length === 0) {
+      pastContainer.innerHTML = `<p class="text-center">No past events found</p>`;
+      return;
+    }
+
+    events.forEach(event => {
+      pastContainer.innerHTML += `
+        <div class="event-item">
+          <div class="event-date">
+            <i class="far fa-calendar"></i>
+            ${formatDate(event.date)}
+          </div>
+          <h4 class="event-title">${event.title}</h4>
+          <div class="event-location">
+            <i class="fas fa-map-marker-alt"></i>
+            ${event.location || "Fakhri Manzil, Pune"}
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function formatDate(date) {
+    return new Date(date).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+  }
+
+  function isEventNear(date) {
+    const diff = (new Date(date) - new Date()) / (1000 * 60 * 60 * 24);
+    return diff <= 1 && diff >= 0;
+  }
+
+  function openMap(lat, lng) {
+    window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`);
+  }
+
+  toggleBtn.addEventListener("click", () => {
+    pastContainer.classList.toggle("active");
+    toggleBtn.innerHTML = pastContainer.classList.contains("active")
+      ? '<i class="fas fa-times me-2"></i> Close Events'
+      : '<i class="fas fa-calendar-alt me-2"></i> View Past Events';
+  });
+
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const EVENTS_API = "https://sheetdb.io/api/v1/3d0bclw7470ao";
+
+  const upcomingContainer = document.getElementById("upcomingEventsContainer");
+  const pastContainer = document.getElementById("eventsList");
+  const toggleBtn = document.getElementById("eventsBtn");
+
+  fetch(EVENTS_API)
+    .then(res => res.json())
+    .then(data => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const upcoming = [];
+      const past = [];
+
+      data.forEach(event => {
+        if (!event.date || !event.title) return;
+
+        let eventDate;
+        if (event.date.includes("/")) {
+          const [dd, mm, yyyy] = event.date.split("/");
+          eventDate = new Date(yyyy, mm - 1, dd);
+        } else {
+          eventDate = new Date(event.date);
+        }
+
+        if (eventDate >= today) {
+          upcoming.push(event);
+        } else {
+          past.push(event);
+        }
+      });
+
+      renderUpcoming(upcoming);
+      renderPast(past);
+    })
+    .catch(err => {
+      console.error(err);
+      upcomingContainer.innerHTML =
+        `<p class="text-danger text-center">Failed to load events</p>`;
+    });
+
+  // ================== UPCOMING ==================
+  function renderUpcoming(events) {
+    upcomingContainer.innerHTML = "";
+
+    if (events.length === 0) {
+      upcomingContainer.innerHTML = `
+        <div class="col-md-4">
+          <div class="card blank-event">
+            <img src="https://via.placeholder.com/400x250?text=No+Upcoming+Events" class="card-img-top">
+            <div class="card-body text-center">
+              <h5>No Upcoming Events</h5>
+            </div>
+          </div>
+        </div>`;
+      return;
+    }
+
+    events.forEach((event, i) => {
+      upcomingContainer.innerHTML += `
+        <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="${i * 100}">
+          <div class="card h-100">
+            <img src="${event.image || 'https://via.placeholder.com/400x250'}" class="card-img-top">
+            <div class="card-body">
+              <h5>${event.title}</h5>
+              <p>${event.description || ""}</p>
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center">
+              <small>
+                <i class="fas fa-calendar"></i>
+                ${formatDate(event.date)}
+              </small>
+
+              ${
+                isEventNear(event.date)
+                  ? `<button class="btn btn-sm btn-get-location"
+                       onclick="openMap(${event.lat}, ${event.lng})">
+                       Get Location
+                     </button>`
+                  : `<a href="${event.registerLink || '#'}" 
+                       class="btn btn-sm btn-custom" target="_blank">
+                       Register
+                     </a>`
+              }
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  // ================== PAST EVENTS ==================
+  function renderPast(events) {
+    pastContainer.innerHTML = "";
+
+    if (events.length === 0) {
+      pastContainer.innerHTML = `<p class="text-center">No past events found</p>`;
+      return;
+    }
+
+    events.forEach(event => {
+      pastContainer.innerHTML += `
+        <div class="event-item">
+          <div class="event-date">
+            <i class="far fa-calendar"></i>
+            ${formatDate(event.date)}
+          </div>
+          <h4 class="event-title">${event.title}</h4>
+          <div class="event-location">
+            <i class="fas fa-map-marker-alt"></i>
+            ${event.location || "Fakhri Manzil, Pune"}
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function formatDate(date) {
+    return new Date(date).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+  }
+
+  function isEventNear(date) {
+    const diff = (new Date(date) - new Date()) / (1000 * 60 * 60 * 24);
+    return diff <= 1 && diff >= 0;
+  }
+
+  function openMap(lat, lng) {
+    window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`);
+  }
+
+  toggleBtn.addEventListener("click", () => {
+    pastContainer.classList.toggle("active");
+    toggleBtn.innerHTML = pastContainer.classList.contains("active")
+      ? '<i class="fas fa-times me-2"></i> Close Events'
+      : '<i class="fas fa-calendar-alt me-2"></i> View Past Events';
+  });
+
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const EVENTS_API = "https://sheetdb.io/api/v1/3d0bclw7470ao";
+
+  const upcomingContainer = document.getElementById("upcomingEventsContainer");
+  const pastContainer = document.getElementById("eventsList");
+  const toggleBtn = document.getElementById("eventsBtn");
+
+  fetch(EVENTS_API)
+    .then(res => res.json())
+    .then(data => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const upcoming = [];
+      const past = [];
+
+      data.forEach(event => {
+        if (!event.date || !event.title) return;
+
+        let eventDate;
+        if (event.date.includes("/")) {
+          const [dd, mm, yyyy] = event.date.split("/");
+          eventDate = new Date(yyyy, mm - 1, dd);
+        } else {
+          eventDate = new Date(event.date);
+        }
+
+        if (eventDate >= today) {
+          upcoming.push(event);
+        } else {
+          past.push(event);
+        }
+      });
+
+      renderUpcoming(upcoming);
+      renderPast(past);
+    })
+    .catch(err => {
+      console.error(err);
+      upcomingContainer.innerHTML =
+        `<p class="text-danger text-center">Failed to load events</p>`;
+    });
+
+  // ================== UPCOMING ==================
+  function renderUpcoming(events) {
+    upcomingContainer.innerHTML = "";
+
+    if (events.length === 0) {
+      upcomingContainer.innerHTML = `
+        <div class="col-md-4">
+          <div class="card blank-event">
+            <img src="https://via.placeholder.com/400x250?text=No+Upcoming+Events" class="card-img-top">
+            <div class="card-body text-center">
+              <h5>No Upcoming Events</h5>
+            </div>
+          </div>
+        </div>`;
+      return;
+    }
+
+    events.forEach((event, i) => {
+      upcomingContainer.innerHTML += `
+        <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="${i * 100}">
+          <div class="card h-100">
+            <img src="${event.image || 'https://via.placeholder.com/400x250'}" class="card-img-top">
+            <div class="card-body">
+              <h5>${event.title}</h5>
+              <p>${event.description || ""}</p>
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center">
+              <small>
+                <i class="fas fa-calendar"></i>
+                ${formatDate(event.date)}
+              </small>
+
+              ${
+                isEventNear(event.date)
+                  ? `<button class="btn btn-sm btn-get-location"
+                       onclick="openMap(${event.lat}, ${event.lng})">
+                       Get Location
+                     </button>`
+                  : `<a href="${event.registerLink || '#'}" 
+                       class="btn btn-sm btn-custom" target="_blank">
+                       Register
+                     </a>`
+              }
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  // ================== PAST EVENTS ==================
+  function renderPast(events) {
+    pastContainer.innerHTML = "";
+
+    if (events.length === 0) {
+      pastContainer.innerHTML = `<p class="text-center">No past events found</p>`;
+      return;
+    }
+
+    events.forEach(event => {
+      pastContainer.innerHTML += `
+        <div class="event-item">
+          <div class="event-date">
+            <i class="far fa-calendar"></i>
+            ${formatDate(event.date)}
+          </div>
+          <h4 class="event-title">${event.title}</h4>
+          <div class="event-location">
+            <i class="fas fa-map-marker-alt"></i>
+            ${event.location || "Fakhri Manzil, Pune"}
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function formatDate(date) {
+    return new Date(date).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+  }
+
+  function isEventNear(date) {
+    const diff = (new Date(date) - new Date()) / (1000 * 60 * 60 * 24);
+    return diff <= 1 && diff >= 0;
+  }
+
+  function openMap(lat, lng) {
+    window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`);
+  }
+
+  toggleBtn.addEventListener("click", () => {
+    pastContainer.classList.toggle("active");
+    toggleBtn.innerHTML = pastContainer.classList.contains("active")
+      ? '<i class="fas fa-times me-2"></i> Close Events'
+      : '<i class="fas fa-calendar-alt me-2"></i> View Past Events';
+  });
+
+});
+</script>
+
 </body>
 </html>

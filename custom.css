@@ -425,7 +425,28 @@
       display: flex;
       flex-direction: column;
     }
-    
+    /* ===== Bigger Upcoming Event Cards ===== */
+#upcomingEventsContainer .card {
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+}
+
+#upcomingEventsContainer .card-img-top {
+  height: 230px;
+  object-fit: cover;
+}
+
+#upcomingEventsContainer .card-body {
+  flex-grow: 1;
+}
+
+#upcomingEventsContainer .card-text {
+  max-height: 90px;
+  overflow: hidden;
+  line-height: 1.5;
+}
+
     .card:hover {
       transform: translateY(-10px);
       box-shadow: var(--shadow-lg);
@@ -679,3 +700,27 @@
         margin-bottom: 30px;
       }
     }
+/* Footer Get Location Button */
+.footer-location-btn {
+  margin-top: 12px;
+}
+
+.footer-location-btn button {
+  background-color: transparent;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  padding: 8px 18px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.footer-location-btn button:hover {
+  background-color: #ff9800;
+  border-color: #ff9800;
+  color: #ffffff;
+}
+
+
+
