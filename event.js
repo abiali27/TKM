@@ -1,4 +1,36 @@
-// ========== EVENTS API CONFIGURATION ==========
+// UI and helpers moved from inline script in index.html
+(function() {
+  if (window.AOS) {
+    AOS.init({ duration: 800, easing: 'ease-in-out', once: true });
+  }
+
+  window.addEventListener('scroll', function() {
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+      if (window.scrollY > 50) navbar.classList.add('scrolled');
+      else navbar.classList.remove('scrolled');
+    }
+  });
+
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const targetId = this.getAttribute('href');
+      if (!targetId || targetId === '#') return;
+      const targetElement = document.querySelector(targetId);
+      if (targetElement) {
+        e.preventDefault();
+        window.scrollTo({ top: targetElement.offsetTop - 80, behavior: 'smooth' });
+      }
+    });
+  });
+
+})();
+
+function openFooterLocation() {
+  window.open("https://www.google.com/maps?q=Fakhri+Manzil+Pune", "_blank");
+}
+
+// ========== EVENTS API CONFIGURATION & RENDERING ==========
 const EVENTS_API = "https://sheetdb.io/api/v1/3d0bclw7470ao";
 
 console.log("🔍 Fetching events from:", EVENTS_API);
@@ -20,44 +52,19 @@ fetch(EVENTS_API)
     const pastEvents = [];
 
     data.forEach((event, idx) => {
-      console.log(`\n--- Row ${idx + 1} ---`);
-      
-      // Skip empty rows
-      if (!event.date || !event.title) {
-        console.log("⚠️ Skipped (missing date/title)");
-        return;
-      }
+      if (!event.date || !event.title) return;
 
-      // Parse date - handle multiple formats
       let eventDate;
       if (event.date.includes("/")) {
-        // Format: DD/MM/YYYY
         const [dd, mm, yyyy] = event.date.split("/");
         eventDate = new Date(yyyy, mm - 1, dd);
-      } else if (event.date.includes("-")) {
-        // Format: YYYY-MM-DD
-        eventDate = new Date(event.date);
       } else {
         eventDate = new Date(event.date);
       }
 
-      console.log(`📅 Title: ${event.title}`);
-      console.log(`📅 Date string: ${event.date}`);
-      console.log(`📅 Parsed date: ${eventDate.toDateString()}`);
-      console.log(`📅 Is upcoming?: ${eventDate >= today}`);
-
-      if (eventDate >= today) {
-        upcomingEvents.push(event);
-        console.log("✅ Added to UPCOMING");
-      } else {
-        pastEvents.push(event);
-        console.log("📁 Added to PAST");
-      }
+      if (eventDate >= today) upcomingEvents.push(event);
+      else pastEvents.push(event);
     });
-
-    console.log("\n🎯 FINAL RESULTS:");
-    console.log(`Upcoming: ${upcomingEvents.length}`, upcomingEvents);
-    console.log(`Past: ${pastEvents.length}`, pastEvents);
 
     renderUpcomingEvents(upcomingEvents);
     renderPastEvents(pastEvents);
@@ -65,17 +72,12 @@ fetch(EVENTS_API)
   .catch(err => {
     console.error("❌ Events loading failed:", err);
     const container = document.getElementById("upcomingEventsContainer");
-    if (container) {
-      container.innerHTML = `<p class="text-danger text-center">Failed to load events. Please check console.</p>`;
-    }
+    if (container) container.innerHTML = `<p class="text-danger text-center">Failed to load events. Please check console.</p>`;
   });
-
-/* ---------------- UPCOMING EVENTS ---------------- */
 
 function renderUpcomingEvents(events) {
   const container = document.getElementById("upcomingEventsContainer");
   if (!container) return;
-
   container.innerHTML = "";
 
   if (events.length === 0) {
@@ -99,11 +101,11 @@ function renderUpcomingEvents(events) {
           <img src="${event.image || 'https://via.placeholder.com/400x250'}" class="card-img-top" alt="${event.title}">
           <div class="card-body">
             <h5 class="card-title">${event.title}</h5>
-            <p class="card-text">${event.description || "Event details will be updated soon."}</p>
+            <p class="card-text">${event.description || ""}</p>
           </div>
           <div class="card-footer d-flex justify-content-between align-items-center">
-            <small class="text-muted">
-              <i class="fas fa-calendar me-1"></i>
+            <small>
+              <i class="fas fa-calendar"></i>
               ${formatDate(event.date)}
             </small>
             ${
@@ -118,19 +120,11 @@ function renderUpcomingEvents(events) {
   });
 }
 
-/* ---------------- PAST EVENTS ---------------- */
-
 function renderPastEvents(events) {
   const container = document.getElementById("eventsList");
   if (!container) return;
-
   container.innerHTML = "";
-
-  if (events.length === 0) {
-    container.innerHTML = "<p class='text-center'>No past events found</p>";
-    return;
-  }
-
+  if (events.length === 0) { container.innerHTML = "<p class='text-center'>No past events found</p>"; return; }
   events.forEach(event => {
     container.innerHTML += `
       <div class="event-item">
@@ -148,57 +142,28 @@ function renderPastEvents(events) {
   });
 }
 
-/* ---------------- HELPER FUNCTIONS ---------------- */
-
 function formatDate(dateStr) {
   let date;
-  
-  // Parse date based on format
-  if (dateStr.includes("/")) {
-    const [dd, mm, yyyy] = dateStr.split("/");
-    date = new Date(yyyy, mm - 1, dd);
-  } else {
-    date = new Date(dateStr);
-  }
-  
-  return date.toLocaleDateString("en-IN", {
-    day: "numeric",
-    month: "long",
-    year: "numeric"
-  });
+  if (dateStr.includes("/")) { const [dd, mm, yyyy] = dateStr.split("/"); date = new Date(yyyy, mm - 1, dd); }
+  else date = new Date(dateStr);
+  return date.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
 }
 
 function isEventNear(dateStr) {
   let eventDate;
-  
-  // Parse date based on format
-  if (dateStr.includes("/")) {
-    const [dd, mm, yyyy] = dateStr.split("/");
-    eventDate = new Date(yyyy, mm - 1, dd);
-  } else {
-    eventDate = new Date(dateStr);
-  }
-  
+  if (dateStr.includes("/")) { const [dd, mm, yyyy] = dateStr.split("/"); eventDate = new Date(yyyy, mm - 1, dd); }
+  else eventDate = new Date(dateStr);
   const diff = (eventDate - new Date()) / (1000 * 60 * 60 * 24);
   return diff <= 1 && diff >= 0;
 }
 
 function openMap(lat, lng) {
-  if (!lat || !lng) {
-    console.warn("⚠️ No coordinates provided for this event");
-    return;
-  }
-  window.open(
-    `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`,
-    "_blank"
-  );
+  if (!lat || !lng) { console.warn("⚠️ No coordinates provided for this event"); return; }
+  window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, "_blank");
 }
-
-/* ---------------- TOGGLE PAST EVENTS ---------------- */
 
 const eventsBtn = document.getElementById("eventsBtn");
 const eventsList = document.getElementById("eventsList");
-
 if (eventsBtn && eventsList) {
   eventsBtn.addEventListener("click", () => {
     eventsList.classList.toggle("active");
