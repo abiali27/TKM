@@ -1,219 +1,484 @@
-// ================== BASIC INIT ==================
-function normalizeEvent(raw) {
-  return {
-    title: raw.Title || raw.title || "",
-    date: raw.Date || raw.date || "",
-    image: raw.Image || raw.image || "",
-    description: raw.Description || raw.description || "",
-    location: raw.Location || raw.location || "",
-    lat: raw.Lat || raw.lat || raw.latitude || "",
-    lng: raw.Lng || raw.lng || raw.longitude || ""
-  };
+// ========== CONFIGURATION ==========
+// 🔗 SETUP INSTRUCTIONS:
+// 1. Go to https://sheetdb.io/
+// 2. Create API for each Google Sheet:
+//    - Instagram Sheet: https://docs.google.com/spreadsheets/d/1TvVAq9hj80Cwqx5-5sCF3fwjOeO2uhDubCbJJemhNcg/edit
+//    - Events Sheet: https://docs.google.com/spreadsheets/d/1t5h5V7A1xnvmMfvjnYlR6YdAisE7OoQFMEfecjX7mbU/edit
+// 3. Replace the API URLs below with your SheetDB API URLs
+
+const CONFIG = {
+  // Replace these with your actual SheetDB API URLs
+  INSTAGRAM_API: "https://sheetdb.io/api/v1/cs62l4m6ba366",
+  EVENTS_API: "https://sheetdb.io/api/v1/7yce9hq14amiv",
+  DEBUG: true // Set to false in production
+};
+
+// ========== UTILITY FUNCTIONS ==========
+function log(...args) {
+  if (CONFIG.DEBUG) console.log(...args);
 }
 
-(function () {
-  console.log("✅ event.js loaded");
-
-  if (window.AOS) {
-    AOS.init({ duration: 800, once: true });
-  }
-
-  window.addEventListener("scroll", () => {
-    const navbar = document.querySelector(".navbar");
-    if (navbar) {
-      navbar.classList.toggle("scrolled", window.scrollY > 50);
-    }
-  });
-
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener("click", function (e) {
-      const target = document.querySelector(this.getAttribute("href"));
-      if (!target) return;
-      e.preventDefault();
-      window.scrollTo({ top: target.offsetTop - 80, behavior: "smooth" });
-    });
-  });
-})();
-
-function openFooterLocation() {
-  window.open("https://www.google.com/maps?q=Fakhri+Manzil+Pune", "_blank");
+function logError(...args) {
+  console.error(...args);
 }
 
-// ================== DATE PARSER (IMPORTANT FIX) ==================
-function parseSheetDate(dateStr) {
+// Date parsing with multiple format support
+function parseDate(dateStr) {
   if (!dateStr) return null;
-
-  // Handle DD-MM-YY
-  if (/^\d{2}-\d{2}-\d{2}$/.test(dateStr)) {
-    const [dd, mm, yy] = dateStr.split("-");
-    const fullYear = Number(yy) < 50 ? `20${yy}` : `19${yy}`;
-    return new Date(`${fullYear}-${mm}-${dd}`);
+  
+  let date;
+  
+  // Handle YYYY-MM-DD format (from your sheet)
+  if (dateStr.includes("-")) {
+    date = new Date(dateStr);
   }
-
-  // Handle DD-MM-YYYY
-  if (/^\d{2}-\d{2}-\d{4}$/.test(dateStr)) {
-    const [dd, mm, yyyy] = dateStr.split("-");
-    return new Date(`${yyyy}-${mm}-${dd}`);
-  }
-
-  // Handle DD/MM/YYYY
-  if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
-    const [dd, mm, yyyy] = dateStr.split("/");
-    return new Date(`${yyyy}-${mm}-${dd}`);
-  }
-
-  // Handle ISO or anything else
-  return new Date(dateStr);
-}
-
-// ================== GET EVENT DATE HELPER ==================
-function getEventDate(event) {
-  return (
-    event.Date ||
-    event.date ||
-    event.EventDate ||
-    event["Event Date"] ||
-    event.StartDate ||
-    event["Start Date"] ||
-    null
-  );
-}
-
-// ================== EVENTS CONFIG ==================
-const EVENTS_API = "https://sheetdb.io/api/v1/3d0bclw7470ao";
-
-const upcomingContainer = document.getElementById("upcomingEventsContainer");
-const pastContainer = document.getElementById("eventsList");
-
-console.log("📡 Fetching events…");
-
-// ================== FETCH & PROCESS ==================
-fetch(EVENTS_API)
-  .then(res => res.json())
-  .then(data => {
-    console.log("📊 Total rows:", data.length);
-    console.log("📋 First event:", data[0]);
-
-    const today = new Date();
-    const todayUTC = new Date(Date.UTC(
-      today.getUTCFullYear(),
-      today.getUTCMonth(),
-      today.getUTCDate()
-    ));
-
-    const upcoming = [];
-    const past = [];
-
-    data.forEach(rawEvent => {
-      const event = normalizeEvent(rawEvent);
-
-      if (!event.title || !event.date) return;
-
-      const eventDate = parseSheetDate(event.date);
-      if (!eventDate || isNaN(eventDate)) return;
-
-      eventDate.setHours(0, 0, 0, 0);
-
-      if (eventDate >= todayUTC) {
-        upcoming.push(event);
-      } else {
-        past.push(event);
-      }
-    });
-
-    console.log("🟢 Upcoming:", upcoming.length);
-    console.log("🔵 Past:", past.length);
-
-    renderUpcomingEvents(upcoming);
-    renderPastEvents(past);
-  })
-  .catch(err => {
-    console.error("❌ Event fetch failed:", err);
-    if (upcomingContainer) {
-      upcomingContainer.innerHTML = `
-        <div class="col-12 text-center text-danger">
-          <h5>Failed to load events</h5>
-        </div>`;
+  // Handle DD/MM/YYYY format
+  else if (dateStr.includes("/")) {
+    const parts = dateStr.split("/");
+    if (parts.length === 3) {
+      const [dd, mm, yyyy] = parts;
+      date = new Date(yyyy, mm - 1, dd);
     }
-  });
-
-// ================== RENDER UPCOMING ==================
-function renderUpcomingEvents(events) {
-  if (!upcomingContainer) return;
-  upcomingContainer.innerHTML = "";
-
-  if (events.length === 0) {
-    upcomingContainer.innerHTML = `
-      <div class="col-md-4">
-        <div class="card text-center">
-          <img src="https://via.placeholder.com/400x250?text=No+Upcoming+Events" class="card-img-top">
-          <div class="card-body">
-            <h5>No Upcoming Events</h5>
-          </div>
-        </div>
-      </div>`;
-    return;
   }
-
-  events.forEach((e, i) => {
-    upcomingContainer.innerHTML += `
-      <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="${i * 100}">
-        <div class="card h-100">
-          <img src="${e.image || 'https://via.placeholder.com/400x250'}" class="card-img-top">
-          <div class="card-body">
-            <h5>${e.title}</h5>
-            <p>${e.description || "Details coming soon"}</p>
-          </div>
-          <div class="card-footer">
-            <small>📅 ${formatDate(e.date)}</small>
-          </div>
-        </div>
-      </div>`;
-  });
+  // Other formats
+  else {
+    date = new Date(dateStr);
+  }
+  
+  return (date && !isNaN(date)) ? date : null;
 }
 
-// ================== RENDER PAST ==================
-function renderPastEvents(events) {
-  if (!pastContainer) return;
-  pastContainer.innerHTML = "";
-
-  if (events.length === 0) {
-    pastContainer.innerHTML = "<p class='text-center'>No past events</p>";
-    return;
+// Format date for display
+function formatDate(dateStr, customDisplay) {
+  // Use custom display if provided
+  if (customDisplay && customDisplay.trim()) {
+    return customDisplay;
   }
-
-  events.forEach(e => {
-    pastContainer.innerHTML += `
-      <div class="event-item">
-        <div class="event-date">📅 ${formatDate(e.Date)}</div>
-        <h4>${e.Title}</h4>
-        <p>${e.Location || "Fakhri Manzil, Pune"}</p>
-      </div>`;
-  });
-}
-
-// ================== HELPERS ==================
-function formatDate(dateStr) {
-  const d = parseSheetDate(dateStr);
-  return d.toLocaleDateString("en-IN", {
+  
+  if (!dateStr) return "Date TBD";
+  
+  const date = parseDate(dateStr);
+  if (!date) return dateStr;
+  
+  return date.toLocaleDateString("en-IN", {
     day: "numeric",
     month: "long",
     year: "numeric"
   });
 }
 
-// ================== PAST EVENTS TOGGLE ==================
-const eventsBtn = document.getElementById("eventsBtn");
-
-if (eventsBtn && pastContainer) {
-  eventsBtn.addEventListener("click", () => {
-    pastContainer.classList.toggle("active");
-    eventsBtn.innerHTML = pastContainer.classList.contains("active")
-      ? "✖ Close Events"
-      : "📅 View Past Events";
-  });
+// Extract Instagram post ID from URL and convert to embed URL
+function getInstagramEmbedUrl(url) {
+  if (!url) return null;
+  
+  // Clean the URL - remove query parameters and trailing slashes
+  let cleanUrl = url.trim();
+  cleanUrl = cleanUrl.split('?')[0].replace(/\/$/, '');
+  
+  log("🔍 Processing Instagram URL:", url);
+  log("🧹 Cleaned URL:", cleanUrl);
+  
+  // Extract post ID from various Instagram URL formats
+  const patterns = [
+    /instagram\.com\/p\/([A-Za-z0-9_-]+)/,      // Posts
+    /instagram\.com\/reel\/([A-Za-z0-9_-]+)/,   // Reels
+    /instagram\.com\/tv\/([A-Za-z0-9_-]+)/      // IGTV
+  ];
+  
+  for (const pattern of patterns) {
+    const match = cleanUrl.match(pattern);
+    if (match) {
+      const postId = match[1];
+      const embedUrl = `https://www.instagram.com/p/${postId}/embed`;
+      log("✅ Extracted post ID:", postId);
+      log("🎯 Embed URL:", embedUrl);
+      return embedUrl;
+    }
+  }
+  
+  logError("❌ Could not extract Instagram post ID from:", url);
+  return null;
 }
 
-console.log("✅ event.js ready");
+// Get location coordinates for map
+function getLocationUrl(lat, lng) {
+  if (lat && lng) {
+    return `https://www.google.com/maps?q=${lat},${lng}`;
+  }
+  return "https://www.google.com/maps?q=Fakhri+Manzil+Pune";
+}
+
+// ========== UI INITIALIZATION ==========
+(function initializeUI() {
+  log("✅ Event.js loaded successfully");
+  
+  // Initialize AOS (Animate On Scroll)
+  if (window.AOS) {
+    AOS.init({ 
+      duration: 800, 
+      easing: 'ease-in-out', 
+      once: true 
+    });
+    log("✅ AOS initialized");
+  }
+
+  // Navbar scroll effect
+  window.addEventListener('scroll', function() {
+    const navbar = document.querySelector('.navbar');
+    if (navbar) {
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    }
+  });
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const targetId = this.getAttribute('href');
+      if (!targetId || targetId === '#') return;
+      
+      const targetElement = document.querySelector(targetId);
+      if (targetElement) {
+        e.preventDefault();
+        window.scrollTo({ 
+          top: targetElement.offsetTop - 80, 
+          behavior: 'smooth' 
+        });
+      }
+    });
+  });
+})();
+
+// Footer location function
+function openFooterLocation() {
+  window.open("https://www.google.com/maps?q=Fakhri+Manzil+Pune", "_blank");
+}
+
+// ========== INSTAGRAM FEED ==========
+async function loadInstagramFeed() {
+  const container = document.getElementById("instagramFeed");
+  if (!container) {
+    log("ℹ️ Instagram feed container not found");
+    return;
+  }
+
+  log("📸 Loading Instagram feed...");
+  
+  try {
+    const response = await fetch(CONFIG.INSTAGRAM_API);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    log("✅ Instagram data loaded:", data.length, "posts");
+    
+    if (!Array.isArray(data) || data.length === 0) {
+      container.innerHTML = `
+        <div class="col-12 text-center">
+          <p>No Instagram posts available</p>
+        </div>
+      `;
+      return;
+    }
+    
+    container.innerHTML = '';
+    
+    // Filter valid posts (using "share link" column name from your sheet)
+    const validPosts = data.filter(post => 
+      post['share link'] && post['share link'].trim() !== ''
+    );
+    
+    if (validPosts.length === 0) {
+      container.innerHTML = `
+        <div class="col-12 text-center">
+          <p>No Instagram posts available</p>
+        </div>
+      `;
+      return;
+    }
+    
+    validPosts.forEach((post, index) => {
+      const embedUrl = getInstagramEmbedUrl(post['share link']);
+      
+      if (!embedUrl) {
+        log("⚠️ Invalid Instagram URL:", post['share link']);
+        return;
+      }
+      
+      container.innerHTML += `
+        <div class="col-md-4 mb-4" data-aos="zoom-in" data-aos-delay="${index * 100}">
+          <div class="instagram-post">
+            <iframe 
+              src="${embedUrl}" 
+              frameborder="0" 
+              scrolling="no" 
+              allowtransparency="true"
+              style="width: 100%; min-height: 480px; border: none; overflow: hidden;"
+              loading="lazy">
+            </iframe>
+          </div>
+        </div>
+      `;
+    });
+    
+    // Reinitialize AOS for new elements
+    if (window.AOS) AOS.refresh();
+    
+  } catch (error) {
+    logError("❌ Error loading Instagram feed:", error);
+    container.innerHTML = `
+      <div class="col-12 text-center text-danger">
+        <p>Failed to load Instagram feed</p>
+        <small>${error.message}</small>
+      </div>
+    `;
+  }
+}
+
+// ========== EVENTS (UPCOMING & PAST) ==========
+async function loadAllEvents() {
+  const upcomingContainer = document.getElementById("upcomingEventsContainer");
+  const pastContainer = document.getElementById("eventsList");
+  const toggleBtn = document.getElementById("eventsBtn");
+  
+  if (!upcomingContainer && !pastContainer) {
+    log("ℹ️ No event containers found");
+    return;
+  }
+
+  log("📅 Loading all events...");
+  
+  try {
+    const response = await fetch(CONFIG.EVENTS_API);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    log("✅ Events data loaded:", data.length, "events");
+    
+    if (!Array.isArray(data)) {
+      throw new Error("Invalid data format");
+    }
+    
+    // Filter valid events
+    const validEvents = data.filter(event => 
+      event.title && event.title.trim() !== '' && 
+      event.date && event.date.trim() !== ''
+    );
+    
+    log("📊 Valid events found:", validEvents.length);
+    
+    // Separate upcoming and past events
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const upcomingEvents = [];
+    const pastEvents = [];
+    
+    validEvents.forEach(event => {
+      const eventDate = parseDate(event.date);
+      if (!eventDate) {
+        log("⚠️ Could not parse date for event:", event.title, event.date);
+        return;
+      }
+      
+      if (eventDate >= today) {
+        upcomingEvents.push(event);
+      } else {
+        pastEvents.push(event);
+      }
+    });
+    
+    // Sort events
+    upcomingEvents.sort((a, b) => parseDate(a.date) - parseDate(b.date));
+    pastEvents.sort((a, b) => parseDate(b.date) - parseDate(a.date));
+    
+    log("✅ Upcoming events:", upcomingEvents.length);
+    log("📜 Past events:", pastEvents.length);
+    
+    // Render upcoming events
+    if (upcomingContainer) {
+      renderUpcomingEvents(upcomingContainer, upcomingEvents);
+    }
+    
+    // Render past events
+    if (pastContainer) {
+      renderPastEvents(pastContainer, pastEvents, toggleBtn);
+    }
+    
+  } catch (error) {
+    logError("❌ Error loading events:", error);
+    
+    if (upcomingContainer) {
+      upcomingContainer.innerHTML = `
+        <div class="col-12 text-center text-danger">
+          <h5>Failed to load events</h5>
+          <p>${error.message}</p>
+          <button class="btn btn-primary mt-2" onclick="loadAllEvents()">Retry</button>
+        </div>
+      `;
+    }
+    
+    if (pastContainer) {
+      pastContainer.innerHTML = `
+        <div class="text-center text-danger py-4">
+          <p>Failed to load past events</p>
+          <small>${error.message}</small>
+        </div>
+      `;
+    }
+  }
+}
+
+// Render upcoming events
+function renderUpcomingEvents(container, events) {
+  container.innerHTML = '';
+  
+  if (events.length === 0) {
+    container.innerHTML = `
+      <div class="col-12">
+        <div class="card text-center border-0 shadow-sm">
+          <div class="card-body py-5">
+            <i class="bi bi-calendar-x" style="font-size: 3rem; color: #ccc;"></i>
+            <h5 class="mt-3">No Upcoming Events</h5>
+            <p class="text-muted">Check back soon for new events!</p>
+          </div>
+        </div>
+      </div>
+    `;
+    return;
+  }
+  
+  events.forEach((event, index) => {
+    const imageUrl = event.image || 'https://via.placeholder.com/400x250?text=Event+Image';
+    const description = event.description || "Details coming soon";
+    const displayDate = formatDate(event.date, event.dateDisplay);
+    const hasRegistration = event.registerLink && event.registerLink.trim() !== '';
+    const locationUrl = getLocationUrl(event.lat, event.lng);
+    
+    container.innerHTML += `
+      <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="${index * 100}">
+        <div class="card h-100 border-0 shadow-sm hover-lift">
+          <img src="${imageUrl}" 
+               class="card-img-top" 
+               alt="${event.title}"
+               onerror="this.src='https://via.placeholder.com/400x250?text=Event+Image'"
+               style="height: 250px; object-fit: cover;">
+          <div class="card-body">
+            <h5 class="card-title">${event.title}</h5>
+            <p class="card-text text-muted">${description}</p>
+            <div class="mt-3">
+              <p class="mb-2">
+                <i class="bi bi-calendar-event"></i> 
+                <strong>${displayDate}</strong>
+              </p>
+              <p class="mb-2">
+                <i class="bi bi-geo-alt"></i> 
+                <a href="${locationUrl}" target="_blank" class="text-decoration-none">
+                  View Location
+                </a>
+              </p>
+              ${hasRegistration ? `
+                <a href="${event.registerLink}" 
+                   target="_blank" 
+                   class="btn btn-primary btn-sm w-100 mt-2">
+                  <i class="bi bi-box-arrow-up-right"></i> Register Now
+                </a>
+              ` : ''}
+            </div>
+          </div>
+          <div class="card-footer bg-transparent border-0">
+            <small class="text-primary fw-bold">📅 ${displayDate}</small>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  
+  // Reinitialize AOS
+  if (window.AOS) AOS.refresh();
+}
+
+// Render past events
+function renderPastEvents(container, events, toggleBtn) {
+  if (events.length === 0) {
+    container.innerHTML = `
+      <div class="text-center py-4">
+        <p class="text-muted">No past events to display</p>
+      </div>
+    `;
+    if (toggleBtn) toggleBtn.style.display = 'none';
+    return;
+  }
+  
+  container.innerHTML = '';
+  
+  events.forEach(event => {
+    const displayDate = formatDate(event.date, event.dateDisplay);
+    const description = event.description || "";
+    const locationUrl = getLocationUrl(event.lat, event.lng);
+    
+    container.innerHTML += `
+      <div class="event-item">
+        <div class="event-date">📅 ${displayDate}</div>
+        <h4 class="event-title">${event.title}</h4>
+        <p class="event-location">
+          📍 <a href="${locationUrl}" target="_blank" class="text-decoration-none">
+            View Location
+          </a>
+        </p>
+        ${description ? `<p class="event-description text-muted">${description}</p>` : ''}
+      </div>
+    `;
+  });
+  
+  // Setup toggle button
+  if (toggleBtn) {
+    toggleBtn.style.display = 'block';
+    
+    // Remove old listeners
+    const newBtn = toggleBtn.cloneNode(true);
+    toggleBtn.parentNode.replaceChild(newBtn, toggleBtn);
+    
+    newBtn.addEventListener('click', function() {
+      container.classList.toggle('active');
+      this.textContent = container.classList.contains('active') 
+        ? '✖ Close Events' 
+        : '📅 View Past Events';
+    });
+  }
+}
+
+// ========== INITIALIZE ALL DATA ==========
+function initializeAllData() {
+  log("🚀 Initializing all data sources...");
+  log("⏰ Current time:", new Date().toLocaleString());
+  
+  // Wait for DOM to be ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      loadInstagramFeed();
+      loadAllEvents();
+    });
+  } else {
+    loadInstagramFeed();
+    loadAllEvents();
+  }
+}
+
+// Start initialization
+initializeAllData();
+
+// Make functions globally available
+window.openFooterLocation = openFooterLocation;
+window.loadInstagramFeed = loadInstagramFeed;
+window.loadAllEvents = loadAllEvents;
 
 
