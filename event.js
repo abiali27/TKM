@@ -49,14 +49,14 @@ function openFooterLocation() {
 // Add cache-busting and timestamp to prevent stale data
 const EVENTS_API = "https://sheetdb.io/api/v1/3d0bclw7470ao";
 
-console.log("🔍 Fetching events from:", EVENTS_API);
-console.log("⏰ Current time:", new Date().toLocaleString());
+console.log("ðŸ” Fetching events from:", EVENTS_API);
+console.log("â° Current time:", new Date().toLocaleString());
 
 // Fetch events with enhanced error handling
 fetch(EVENTS_API)
   .then(res => {
-    console.log("📡 Response status:", res.status);
-    console.log("📡 Response OK:", res.ok);
+    console.log("ðŸ“¡ Response status:", res.status);
+    console.log("ðŸ“¡ Response OK:", res.ok);
     
     if (!res.ok) {
       throw new Error(`HTTP ${res.status}: ${res.statusText}`);
@@ -64,9 +64,9 @@ fetch(EVENTS_API)
     return res.json();
   })
   .then(data => {
-    console.log("✅ Data received successfully");
-    console.log("📊 Total rows:", data.length);
-    console.log("📋 First event:", data[0]);
+    console.log("âœ… Data received successfully");
+    console.log("ðŸ“Š Total rows:", data.length);
+    console.log("ðŸ“‹ First event:", data[0]);
 
     // Get today's date at midnight for accurate comparison
     const today = new Date();
@@ -79,7 +79,7 @@ fetch(EVENTS_API)
     data.forEach((event, idx) => {
       // Skip events without required fields
       if (!event.date || !event.title) {
-        console.warn(`⚠️ Skipping event ${idx} - missing date or title:`, event);
+        console.warn(`âš ï¸ Skipping event ${idx} - missing date or title:`, event);
         return;
       }
 
@@ -97,7 +97,7 @@ fetch(EVENTS_API)
 
       // Validate date
       if (isNaN(eventDate.getTime())) {
-        console.warn(`⚠️ Invalid date for event: ${event.title} - ${event.date}`);
+        console.warn(`âš ï¸ Invalid date for event: ${event.title} - ${event.date}`);
         return;
       }
 
@@ -109,17 +109,17 @@ fetch(EVENTS_API)
       }
     });
 
-    console.log("📅 Upcoming events:", upcomingEvents.length);
-    console.log("📅 Past events:", pastEvents.length);
+    console.log("ðŸ“… Upcoming events:", upcomingEvents.length);
+    console.log("ðŸ“… Past events:", pastEvents.length);
 
     // Render both event lists
     renderUpcomingEvents(upcomingEvents);
     renderPastEvents(pastEvents);
   })
   .catch(err => {
-    console.error("❌ Events loading failed:", err);
-    console.error("📝 Error details:", err.message);
-    console.error("🔗 API URL:", EVENTS_API);
+    console.error("âŒ Events loading failed:", err);
+    console.error("ðŸ“ Error details:", err.message);
+    console.error("ðŸ”— API URL:", EVENTS_API);
     
     // Show user-friendly error message
     const container = document.getElementById("upcomingEventsContainer");
@@ -127,7 +127,7 @@ fetch(EVENTS_API)
       container.innerHTML = `
         <div class="col-12">
           <div class="alert alert-danger text-center" role="alert">
-            <h5>⚠️ Unable to Load Events</h5>
+            <h5>âš ï¸ Unable to Load Events</h5>
             <p>There was a problem connecting to the events database.</p>
             <small>Error: ${err.message}</small>
             <br>
@@ -144,7 +144,7 @@ fetch(EVENTS_API)
 function renderUpcomingEvents(events) {
   const container = document.getElementById("upcomingEventsContainer");
   if (!container) {
-    console.error("❌ upcomingEventsContainer not found in DOM");
+    console.error("âŒ upcomingEventsContainer not found in DOM");
     return;
   }
   
@@ -160,7 +160,7 @@ function renderUpcomingEvents(events) {
                alt="No Events"
                loading="lazy">
           <div class="card-body text-center">
-            <h5>📅 No Upcoming Events</h5>
+            <h5>ðŸ“… No Upcoming Events</h5>
             <p>Check back soon for new events!</p>
           </div>
         </div>
@@ -196,14 +196,14 @@ function renderUpcomingEvents(events) {
     container.innerHTML += eventCard;
   });
 
-  console.log("✅ Rendered", events.length, "upcoming events");
+  console.log(" Rendered", events.length, "upcoming events");
 }
 
 // ========== RENDER PAST EVENTS ==========
 function renderPastEvents(events) {
   const container = document.getElementById("eventsList");
   if (!container) {
-    console.error("❌ eventsList container not found in DOM");
+    console.error("âŒ eventsList container not found in DOM");
     return;
   }
   
@@ -233,7 +233,7 @@ function renderPastEvents(events) {
     container.innerHTML += eventItem;
   });
 
-  console.log("✅ Rendered", events.length, "past events");
+  console.log("âœ… Rendered", events.length, "past events");
 }
 
 // ========== HELPER FUNCTIONS ==========
@@ -274,7 +274,7 @@ function formatDate(dateStr) {
 
   // Validate date
   if (isNaN(date.getTime())) {
-    console.error("❌ Invalid date string:", dateStr);
+    console.error("âŒ Invalid date string:", dateStr);
     return dateStr; // Return original string if invalid
   }
 
@@ -319,8 +319,8 @@ function isEventNear(dateStr) {
 function openMap(lat, lng, eventTitle) {
   // Validate coordinates
   if (!lat || !lng || lat === 'undefined' || lng === 'undefined') {
-    console.warn("⚠️ No valid coordinates for event:", eventTitle);
-    alert("📍 Location coordinates not available for this event.");
+    console.warn("âš ï¸ No valid coordinates for event:", eventTitle);
+    alert("ðŸ“ Location coordinates not available for this event.");
     return;
   }
 
@@ -330,14 +330,14 @@ function openMap(lat, lng, eventTitle) {
 
   // Validate parsed coordinates
   if (isNaN(latitude) || isNaN(longitude)) {
-    console.warn("⚠️ Invalid coordinates:", { lat, lng });
-    alert("📍 Invalid location coordinates.");
+    console.warn("âš ï¸ Invalid coordinates:", { lat, lng });
+    alert("ðŸ“ Invalid location coordinates.");
     return;
   }
 
   // Open Google Maps with directions
   const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
-  console.log("🗺️ Opening maps for:", eventTitle, "at", latitude, longitude);
+  console.log("ðŸ—ºï¸ Opening maps for:", eventTitle, "at", latitude, longitude);
   window.open(mapsUrl, "_blank");
 }
 
@@ -357,7 +357,8 @@ if (eventsBtn && eventsList) {
     }
   });
 } else {
-  console.warn("⚠️ Events toggle button or list not found in DOM");
+  console.warn("âš ï¸ Events toggle button or list not found in DOM");
 }
 
-console.log("✅ Event system initialized successfully");
+console.log("âœ… Event system initialized successfully");
+
