@@ -2,6 +2,7 @@
 (function() {
   // Initialize AOS animations
   if (window.AOS) {
+    AOS.init({ duration: 800, easing: 'ease-in-out', once: true });
     AOS.init({ 
       duration: 800, 
       easing: 'ease-in-out', 
@@ -13,6 +14,8 @@
   window.addEventListener('scroll', function() {
     const navbar = document.querySelector('.navbar');
     if (navbar) {
+      if (window.scrollY > 50) navbar.classList.add('scrolled');
+      else navbar.classList.remove('scrolled');
       if (window.scrollY > 50) {
         navbar.classList.add('scrolled');
       } else {
@@ -30,6 +33,7 @@
       const targetElement = document.querySelector(targetId);
       if (targetElement) {
         e.preventDefault();
+        window.scrollTo({ top: targetElement.offsetTop - 80, behavior: 'smooth' });
         window.scrollTo({ 
           top: targetElement.offsetTop - 80, 
           behavior: 'smooth' 
@@ -37,6 +41,7 @@
       }
     });
   });
+
 })();
 
 // Open Google Maps for footer location
@@ -49,14 +54,15 @@ function openFooterLocation() {
 // Add cache-busting and timestamp to prevent stale data
 const EVENTS_API = "https://sheetdb.io/api/v1/3d0bclw7470ao";
 
-console.log("ðŸ” Fetching events from:", EVENTS_API);
-console.log("â° Current time:", new Date().toLocaleString());
+console.log("🔍 Fetching events from:", EVENTS_API);
+console.log("⏰ Current time:", new Date().toLocaleString());
 
 // Fetch events with enhanced error handling
 fetch(EVENTS_API)
   .then(res => {
-    console.log("ðŸ“¡ Response status:", res.status);
-    console.log("ðŸ“¡ Response OK:", res.ok);
+    console.log("📡 Response status:", res.status);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    console.log("📡 Response OK:", res.ok);
     
     if (!res.ok) {
       throw new Error(`HTTP ${res.status}: ${res.statusText}`);
@@ -64,9 +70,10 @@ fetch(EVENTS_API)
     return res.json();
   })
   .then(data => {
-    console.log("âœ… Data received successfully");
-    console.log("ðŸ“Š Total rows:", data.length);
-    console.log("ðŸ“‹ First event:", data[0]);
+    console.log("✅ Data received:", data);
+    console.log("✅ Data received successfully");
+    console.log("📊 Total rows:", data.length);
+    console.log("📋 First event:", data[0]);
 
     // Get today's date at midnight for accurate comparison
     const today = new Date();
@@ -77,9 +84,10 @@ fetch(EVENTS_API)
 
     // Sort events into upcoming and past
     data.forEach((event, idx) => {
+      if (!event.date || !event.title) return;
       // Skip events without required fields
       if (!event.date || !event.title) {
-        console.warn(`âš ï¸ Skipping event ${idx} - missing date or title:`, event);
+        console.warn(`⚠️ Skipping event ${idx} - missing date or title:`, event);
         return;
       }
 
@@ -89,15 +97,14 @@ fetch(EVENTS_API)
       if (event.date.includes("/")) {
         const [dd, mm, yyyy] = event.date.split("/");
         eventDate = new Date(yyyy, mm - 1, dd);
-      } 
-      // Handle ISO date format
-      else {
+      } else {
+        // Handle ISO date format
         eventDate = new Date(event.date);
       }
 
       // Validate date
       if (isNaN(eventDate.getTime())) {
-        console.warn(`âš ï¸ Invalid date for event: ${event.title} - ${event.date}`);
+        console.warn(`⚠️ Invalid date for event: ${event.title} - ${event.date}`);
         return;
       }
 
@@ -109,17 +116,17 @@ fetch(EVENTS_API)
       }
     });
 
-    console.log("ðŸ“… Upcoming events:", upcomingEvents.length);
-    console.log("ðŸ“… Past events:", pastEvents.length);
+    console.log("📅 Upcoming events:", upcomingEvents.length);
+    console.log("📅 Past events:", pastEvents.length);
 
     // Render both event lists
     renderUpcomingEvents(upcomingEvents);
     renderPastEvents(pastEvents);
   })
   .catch(err => {
-    console.error("âŒ Events loading failed:", err);
-    console.error("ðŸ“ Error details:", err.message);
-    console.error("ðŸ”— API URL:", EVENTS_API);
+    console.error("❌ Events loading failed:", err);
+    console.error("📝 Error details:", err.message);
+    console.error("🔗 API URL:", EVENTS_API);
     
     // Show user-friendly error message
     const container = document.getElementById("upcomingEventsContainer");
@@ -127,7 +134,7 @@ fetch(EVENTS_API)
       container.innerHTML = `
         <div class="col-12">
           <div class="alert alert-danger text-center" role="alert">
-            <h5>âš ï¸ Unable to Load Events</h5>
+            <h5>⚠️ Unable to Load Events</h5>
             <p>There was a problem connecting to the events database.</p>
             <small>Error: ${err.message}</small>
             <br>
@@ -144,7 +151,7 @@ fetch(EVENTS_API)
 function renderUpcomingEvents(events) {
   const container = document.getElementById("upcomingEventsContainer");
   if (!container) {
-    console.error("âŒ upcomingEventsContainer not found in DOM");
+    console.error("❌ upcomingEventsContainer not found in DOM");
     return;
   }
   
@@ -160,12 +167,11 @@ function renderUpcomingEvents(events) {
                alt="No Events"
                loading="lazy">
           <div class="card-body text-center">
-            <h5>ðŸ“… No Upcoming Events</h5>
+            <h5>📅 No Upcoming Events</h5>
             <p>Check back soon for new events!</p>
           </div>
         </div>
-      </div>
-    `;
+      </div>`;
     return;
   }
 
@@ -196,14 +202,14 @@ function renderUpcomingEvents(events) {
     container.innerHTML += eventCard;
   });
 
-  console.log(" Rendered", events.length, "upcoming events");
+  console.log("✅ Rendered", events.length, "upcoming events");
 }
 
 // ========== RENDER PAST EVENTS ==========
 function renderPastEvents(events) {
   const container = document.getElementById("eventsList");
   if (!container) {
-    console.error("âŒ eventsList container not found in DOM");
+    console.error("❌ eventsList container not found in DOM");
     return;
   }
   
@@ -221,19 +227,20 @@ function renderPastEvents(events) {
       <div class="event-item">
         <div class="event-date">
           <i class="far fa-calendar"></i>
-          ${formatDate(event.date)}
+          <div class="date-text">
+            <strong>${formatDate(event.date)}</strong>
+          </div>
         </div>
-        <h4 class="event-title">${event.title}</h4>
-        <div class="event-location">
-          <i class="fas fa-map-marker-alt"></i>
-          ${event.location || "Fakhri Manzil, Pune"}
+        <div class="event-details">
+          <h5>${event.title}</h5>
+          <p>${event.description || ""}</p>
         </div>
       </div>
     `;
     container.innerHTML += eventItem;
   });
 
-  console.log("âœ… Rendered", events.length, "past events");
+  console.log("✅ Rendered", events.length, "past events");
 }
 
 // ========== HELPER FUNCTIONS ==========
@@ -266,15 +273,14 @@ function formatDate(dateStr) {
   if (dateStr.includes("/")) {
     const [dd, mm, yyyy] = dateStr.split("/");
     date = new Date(yyyy, mm - 1, dd);
-  } 
-  // Handle ISO format
-  else {
+  } else {
+    // Handle ISO format
     date = new Date(dateStr);
   }
 
   // Validate date
   if (isNaN(date.getTime())) {
-    console.error("âŒ Invalid date string:", dateStr);
+    console.error("❌ Invalid date string:", dateStr);
     return dateStr; // Return original string if invalid
   }
 
@@ -319,8 +325,8 @@ function isEventNear(dateStr) {
 function openMap(lat, lng, eventTitle) {
   // Validate coordinates
   if (!lat || !lng || lat === 'undefined' || lng === 'undefined') {
-    console.warn("âš ï¸ No valid coordinates for event:", eventTitle);
-    alert("ðŸ“ Location coordinates not available for this event.");
+    console.warn("⚠️ No valid coordinates for event:", eventTitle);
+    alert("📍 Location coordinates not available for this event.");
     return;
   }
 
@@ -330,14 +336,14 @@ function openMap(lat, lng, eventTitle) {
 
   // Validate parsed coordinates
   if (isNaN(latitude) || isNaN(longitude)) {
-    console.warn("âš ï¸ Invalid coordinates:", { lat, lng });
-    alert("ðŸ“ Invalid location coordinates.");
+    console.warn("⚠️ Invalid coordinates:", { lat, lng });
+    alert("📍 Invalid location coordinates.");
     return;
   }
 
   // Open Google Maps with directions
   const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
-  console.log("ðŸ—ºï¸ Opening maps for:", eventTitle, "at", latitude, longitude);
+  console.log("🗺️ Opening maps for:", eventTitle, "at", latitude, longitude);
   window.open(mapsUrl, "_blank");
 }
 
@@ -348,6 +354,9 @@ const eventsList = document.getElementById("eventsList");
 if (eventsBtn && eventsList) {
   eventsBtn.addEventListener("click", () => {
     eventsList.classList.toggle("active");
+    eventsBtn.innerHTML = eventsList.classList.contains("active")
+      ? '<i class="fas fa-times me-2"></i> Close Events'
+      : '<i class="fas fa-calendar-alt me-2"></i> View Past Events';
     
     // Update button text and icon
     if (eventsList.classList.contains("active")) {
@@ -357,8 +366,8 @@ if (eventsBtn && eventsList) {
     }
   });
 } else {
-  console.warn("âš ï¸ Events toggle button or list not found in DOM");
+  console.warn("⚠️ Events toggle button or list not found in DOM");
 }
 
-console.log("âœ… Event system initialized successfully");
+console.log("✅ Event system initialized successfully");
 
