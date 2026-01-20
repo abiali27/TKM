@@ -1,4 +1,16 @@
 // ================== BASIC INIT ==================
+function normalizeEvent(raw) {
+  return {
+    title: raw.Title || raw.title || "",
+    date: raw.Date || raw.date || "",
+    image: raw.Image || raw.image || "",
+    description: raw.Description || raw.description || "",
+    location: raw.Location || raw.location || "",
+    lat: raw.Lat || raw.lat || raw.latitude || "",
+    lng: raw.Lng || raw.lng || raw.longitude || ""
+  };
+}
+
 (function () {
   console.log("✅ event.js loaded");
 
@@ -29,15 +41,42 @@ function openFooterLocation() {
 
 // ================== DATE PARSER (IMPORTANT FIX) ==================
 function parseSheetDate(dateStr) {
-  // Expected: DD-MM-YY
   if (!dateStr) return null;
 
-  const parts = dateStr.split("-");
-  if (parts.length !== 3) return new Date(dateStr);
+  // Handle DD-MM-YY
+  if (/^\d{2}-\d{2}-\d{2}$/.test(dateStr)) {
+    const [dd, mm, yy] = dateStr.split("-");
+    const fullYear = Number(yy) < 50 ? `20${yy}` : `19${yy}`;
+    return new Date(`${fullYear}-${mm}-${dd}`);
+  }
 
-  const [dd, mm, yy] = parts;
-  const fullYear = Number(yy) < 50 ? `20${yy}` : `19${yy}`;
-  return new Date(`${fullYear}-${mm}-${dd}`);
+  // Handle DD-MM-YYYY
+  if (/^\d{2}-\d{2}-\d{4}$/.test(dateStr)) {
+    const [dd, mm, yyyy] = dateStr.split("-");
+    return new Date(`${yyyy}-${mm}-${dd}`);
+  }
+
+  // Handle DD/MM/YYYY
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
+    const [dd, mm, yyyy] = dateStr.split("/");
+    return new Date(`${yyyy}-${mm}-${dd}`);
+  }
+
+  // Handle ISO or anything else
+  return new Date(dateStr);
+}
+
+// ================== GET EVENT DATE HELPER ==================
+function getEventDate(event) {
+  return (
+    event.Date ||
+    event.date ||
+    event.EventDate ||
+    event["Event Date"] ||
+    event.StartDate ||
+    event["Start Date"] ||
+    null
+  );
 }
 
 // ================== EVENTS CONFIG ==================
@@ -56,25 +95,30 @@ fetch(EVENTS_API)
     console.log("📋 First event:", data[0]);
 
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const todayUTC = new Date(Date.UTC(
+      today.getUTCFullYear(),
+      today.getUTCMonth(),
+      today.getUTCDate()
+    ));
 
     const upcoming = [];
     const past = [];
 
-    data.forEach(event => {
-      // SheetDB fields (CASE SENSITIVE)
-      const title = event.Title;
-      const dateStr = event.Date;
+    data.forEach(rawEvent => {
+      const event = normalizeEvent(rawEvent);
 
-      if (!title || !dateStr) return;
+      if (!event.title || !event.date) return;
 
-      const eventDate = parseSheetDate(dateStr);
+      const eventDate = parseSheetDate(event.date);
       if (!eventDate || isNaN(eventDate)) return;
 
       eventDate.setHours(0, 0, 0, 0);
 
-      if (eventDate >= today) upcoming.push(event);
-      else past.push(event);
+      if (eventDate >= todayUTC) {
+        upcoming.push(event);
+      } else {
+        past.push(event);
+      }
     });
 
     console.log("🟢 Upcoming:", upcoming.length);
@@ -115,13 +159,13 @@ function renderUpcomingEvents(events) {
     upcomingContainer.innerHTML += `
       <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="${i * 100}">
         <div class="card h-100">
-          <img src="${e.Image || 'https://via.placeholder.com/400x250'}" class="card-img-top">
+          <img src="${e.image || 'https://via.placeholder.com/400x250'}" class="card-img-top">
           <div class="card-body">
-            <h5>${e.Title}</h5>
-            <p>${e.Description || "Details coming soon"}</p>
+            <h5>${e.title}</h5>
+            <p>${e.description || "Details coming soon"}</p>
           </div>
           <div class="card-footer">
-            <small>📅 ${formatDate(e.Date)}</small>
+            <small>📅 ${formatDate(e.date)}</small>
           </div>
         </div>
       </div>`;
