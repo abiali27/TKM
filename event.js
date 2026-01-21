@@ -251,7 +251,7 @@ async function loadAllEvents() {
     return;
   }
 
-  log("📅 Loading all events...");
+  log(" Loading all events...");
   
   try {
     const response = await fetch(CONFIG.EVENTS_API);
@@ -395,7 +395,7 @@ function renderUpcomingEvents(container, events) {
             </div>
           </div>
           <div class="card-footer bg-transparent border-0">
-            <small class="text-primary fw-bold">📅 ${displayDate}</small>
+            <small class="text-primary fw-bold"> ${displayDate}</small>
           </div>
         </div>
       </div>
@@ -427,7 +427,7 @@ function renderPastEvents(container, events, toggleBtn) {
     
     container.innerHTML += `
       <div class="event-item">
-        <div class="event-date">📅 ${displayDate}</div>
+        <div class="event-date"> ${displayDate}</div>
         <h4 class="event-title">${event.title}</h4>
         <p class="event-location">
           📍 <a href="${locationUrl}" target="_blank" class="text-decoration-none">
@@ -451,7 +451,7 @@ function renderPastEvents(container, events, toggleBtn) {
       container.classList.toggle('active');
       this.textContent = container.classList.contains('active') 
         ? '✖ Close Events' 
-        : '📅 View Past Events';
+        : ' View Past Events';
     });
   }
 }
