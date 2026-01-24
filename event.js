@@ -251,7 +251,7 @@ async function loadAllEvents() {
     return;
   }
 
-  log(" Loading all events...");
+  log("📅 Loading all events...");
   
   try {
     const response = await fetch(CONFIG.EVENTS_API);
@@ -276,8 +276,7 @@ async function loadAllEvents() {
     log("📊 Valid events found:", validEvents.length);
     
     // Separate upcoming and past events
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const now = new Date();
     
     const upcomingEvents = [];
     const pastEvents = [];
@@ -289,7 +288,11 @@ async function loadAllEvents() {
         return;
       }
       
-      if (eventDate >= today) {
+      // Add 24 hours to event date to move it to past events after the event day
+      const eventEndTime = new Date(eventDate);
+      eventEndTime.setHours(23, 59, 59, 999);
+      
+      if (now <= eventEndTime) {
         upcomingEvents.push(event);
       } else {
         pastEvents.push(event);
@@ -395,7 +398,7 @@ function renderUpcomingEvents(container, events) {
             </div>
           </div>
           <div class="card-footer bg-transparent border-0">
-            <small class="text-primary fw-bold"> ${displayDate}</small>
+            <small class="text-primary fw-bold">📅 ${displayDate}</small>
           </div>
         </div>
       </div>
@@ -427,7 +430,7 @@ function renderPastEvents(container, events, toggleBtn) {
     
     container.innerHTML += `
       <div class="event-item">
-        <div class="event-date"> ${displayDate}</div>
+        <div class="event-date">📅 ${displayDate}</div>
         <h4 class="event-title">${event.title}</h4>
         <p class="event-location">
           📍 <a href="${locationUrl}" target="_blank" class="text-decoration-none">
