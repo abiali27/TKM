@@ -382,12 +382,12 @@ function renderUpcomingEvents(container, events) {
                 <i class="bi bi-calendar-event"></i> 
                 <strong>${displayDate}</strong>
               </p>
-              <p class="mb-2">
-                <i class="bi bi-geo-alt"></i> 
-                <a href="${locationUrl}" target="_blank" class="text-decoration-none">
-                  View Location
-                </a>
-              </p>
+              <a href="${locationUrl}" 
+                 target="_blank" 
+                 class="btn btn-sm mt-2"
+                 style="background-color: #90EE90; color: #333; border: 1px solid #7CCD7C; font-size: 0.875rem; display: inline-block; width: auto;">
+                <i class="bi bi-geo-alt"></i> View Location
+              </a>
               ${hasRegistration ? `
                 <a href="${event.registerLink}" 
                    target="_blank" 
@@ -426,17 +426,11 @@ function renderPastEvents(container, events, toggleBtn) {
   events.forEach(event => {
     const displayDate = formatDate(event.date, event.dateDisplay);
     const description = event.description || "";
-    const locationUrl = getLocationUrl(event.lat, event.lng);
     
     container.innerHTML += `
       <div class="event-item">
         <div class="event-date">📅 ${displayDate}</div>
         <h4 class="event-title">${event.title}</h4>
-        <p class="event-location">
-          📍 <a href="${locationUrl}" target="_blank" class="text-decoration-none">
-            View Location
-          </a>
-        </p>
         ${description ? `<p class="event-description text-muted">${description}</p>` : ''}
       </div>
     `;
