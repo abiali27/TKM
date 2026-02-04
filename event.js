@@ -303,17 +303,20 @@ async function loadAllEvents() {
     upcomingEvents.sort((a, b) => parseDate(a.date) - parseDate(b.date));
     pastEvents.sort((a, b) => parseDate(b.date) - parseDate(a.date));
     
+    // Limit past events to only 3 most recent
+    const limitedPastEvents = pastEvents.slice(0, 3);
+    
     log("✅ Upcoming events:", upcomingEvents.length);
-    log("📜 Past events:", pastEvents.length);
+    log("📜 Past events:", limitedPastEvents.length, "(limited to 3 most recent)");
     
     // Render upcoming events
     if (upcomingContainer) {
       renderUpcomingEvents(upcomingContainer, upcomingEvents);
     }
     
-    // Render past events
+    // Render past events (limited to 3)
     if (pastContainer) {
-      renderPastEvents(pastContainer, pastEvents, toggleBtn);
+      renderPastEvents(pastContainer, limitedPastEvents, toggleBtn);
     }
     
   } catch (error) {
@@ -450,7 +453,7 @@ function renderPastEvents(container, events, toggleBtn) {
       container.classList.toggle('active');
       this.textContent = container.classList.contains('active') 
         ? '✖ Close Events' 
-        : ' View Past Events';
+        : '📜 View Past Events';
     });
     
     // Close past events when clicking anywhere outside
@@ -459,7 +462,7 @@ function renderPastEvents(container, events, toggleBtn) {
         // Check if click is outside both the container and the button
         if (!container.contains(e.target) && !newBtn.contains(e.target)) {
           container.classList.remove('active');
-          newBtn.textContent = ' View Past Events';
+          newBtn.textContent = '📜 View Past Events';
         }
       }
     });
