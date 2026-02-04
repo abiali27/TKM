@@ -437,6 +437,7 @@ function renderPastEvents(container, events, toggleBtn) {
   });
   
   // Setup toggle button
+  // Setup toggle button
   if (toggleBtn) {
     toggleBtn.style.display = 'block';
     
@@ -444,15 +445,31 @@ function renderPastEvents(container, events, toggleBtn) {
     const newBtn = toggleBtn.cloneNode(true);
     toggleBtn.parentNode.replaceChild(newBtn, toggleBtn);
     
-    newBtn.addEventListener('click', function() {
+    newBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
       container.classList.toggle('active');
       this.textContent = container.classList.contains('active') 
         ? '✖ Close Events' 
         : ' View Past Events';
     });
+    
+    // Close past events when clicking anywhere outside
+    document.addEventListener('click', function(e) {
+      if (container.classList.contains('active')) {
+        // Check if click is outside both the container and the button
+        if (!container.contains(e.target) && !newBtn.contains(e.target)) {
+          container.classList.remove('active');
+          newBtn.textContent = ' View Past Events';
+        }
+      }
+    });
+    
+    // Prevent clicks inside the container from closing it
+    container.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
   }
 }
-
 // ========== INITIALIZE ALL DATA ==========
 function initializeAllData() {
   log("🚀 Initializing all data sources...");
@@ -477,5 +494,3 @@ initializeAllData();
 window.openFooterLocation = openFooterLocation;
 window.loadInstagramFeed = loadInstagramFeed;
 window.loadAllEvents = loadAllEvents;
-
-
