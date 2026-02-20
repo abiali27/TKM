@@ -13,37 +13,37 @@
   <!-- moved inline styles into custom.css -->
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background:#ddeedf;">
+ <nav class="navbar navbar-expand-lg fixed-top" style="background:#ddeedf;">
   <div class="container">
-   <a class="navbar-brand d-flex align-items-center" href="#home">
-  <img src="logo.png" alt="Toloba Logo" style="height:60px; margin-right:15px;">
-  Toloba Poona
 
-</a>
+    <!-- Logo -->
+    <a class="navbar-brand d-flex align-items-center" href="#home">
+      <img src="logo.png" style="height:60px; margin-right:15px;">
+      Toloba Poona
+    </a>
 
     <!-- Hamburger -->
-    <button class="navbar-toggler border-0" type="button" id="customToggle">
+    <button class="navbar-toggler border-0 shadow-none"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarContent"
+            aria-controls="navbarContent"
+            aria-expanded="false">
       <span class="toggler-line"></span>
       <span class="toggler-line"></span>
       <span class="toggler-line"></span>
     </button>
 
+    <!-- Menu -->
     <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
       <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" href="#home">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#about">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#events">Events</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#instagram">Instagram</a>
-        </li>
+        <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="#events">Events</a></li>
+        <li class="nav-item"><a class="nav-link" href="#instagram">Instagram</a></li>
       </ul>
     </div>
+
   </div>
 </nav>
 
