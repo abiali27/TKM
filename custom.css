@@ -1,6 +1,6 @@
-html {
-  scroll-behavior: smooth;
-}
+ 
+  scroll-behavior smooth
+
 
 /* Custom Hamburger */
 .navbar-toggler {
@@ -48,7 +48,33 @@ html {
       --shadow-lg: 0 10px 20px rgba(0,0,0,0.1), 0 6px 6px rgba(0,0,0,0.1);
     }
 /* stylelint-enable */
+/* BIG NAVBAR HEIGHT */
+.navbar {
+  background-color: #ddeedf!important;
+  padding: 25px 0;   /* Makes it tall */
+}
 
+/* Container spacing */
+.navbar .container {
+  align-items: center;
+}
+.navbar-brand {
+  color: #2F6F3E!important;
+  font-weight: 700;
+}
+/* Brand text style */
+
+
+/* Nav links */
+.nav-link {
+  font-size: 18px;
+  margin-left: 30px;
+  color: #2b2b2b !important;
+}
+
+.nav-link:hover {
+  color: #1f3d2b !important;
+}
 
     
     /* Buttons */
