@@ -1,10 +1,4 @@
-// ========== CONFIGURATION ==========
-// 🔗 SETUP INSTRUCTIONS:
-// 1. Go to https://sheetdb.io/
-// 2. Create API for each Google Sheet:
-//    - Instagram Sheet: https://docs.google.com/spreadsheets/d/1TvVAq9hj80Cwqx5-5sCF3fwjOeO2uhDubCbJJemhNcg/edit
-//    - Events Sheet: https://docs.google.com/spreadsheets/d/1t5h5V7A1xnvmMfvjnYlR6YdAisE7OoQFMEfecjX7mbU/edit
-// 3. Replace the API URLs below with your SheetDB API URLs
+
 
 const CONFIG = {
   // Replace these with your actual SheetDB API URLs
@@ -307,7 +301,7 @@ async function loadAllEvents() {
     const limitedPastEvents = pastEvents.slice(0, 3);
     
     log("✅ Upcoming events:", upcomingEvents.length);
-    log("📜 Past events:", limitedPastEvents.length, "(limited to 3 most recent)");
+    log(" Past events:", limitedPastEvents.length, "(limited to 3 most recent)");
     
     // Render upcoming events
     if (upcomingContainer) {
@@ -453,7 +447,7 @@ function renderPastEvents(container, events, toggleBtn) {
       container.classList.toggle('active');
       this.textContent = container.classList.contains('active') 
         ? '✖ Close Events' 
-        : '📜 View Past Events';
+        : ' View Past Events';
     });
     
     // Close past events when clicking anywhere outside
@@ -462,7 +456,7 @@ function renderPastEvents(container, events, toggleBtn) {
         // Check if click is outside both the container and the button
         if (!container.contains(e.target) && !newBtn.contains(e.target)) {
           container.classList.remove('active');
-          newBtn.textContent = '📜 View Past Events';
+          newBtn.textContent = ' View Past Events';
         }
       }
     });
