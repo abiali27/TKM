@@ -140,6 +140,40 @@ scroll-behavior smooth
       scroll-padding: 0 30px;
       -webkit-overflow-scrolling: touch;
     }
+    
+    .horizontal-scroll-item {
+      flex: 0 0 auto;
+      width: 200px;
+      height: 200px;
+      background-color: white;
+      border-radius: 15px;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .horizontal-scroll-item:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .horizontal-scroll-item i {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 15px;
+    }
+    
+    .horizontal-scroll-item div {
+      font-weight: 600;
+      color: var(--dark);
+      font-size: 1rem;
+    }
 
    
     .btn-custom {
