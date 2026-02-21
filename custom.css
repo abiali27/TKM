@@ -5,7 +5,7 @@ scroll-behavior smooth
 .navbar-toggler {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
   width: 30px;
   height: 25px;
   justify-content: center;
