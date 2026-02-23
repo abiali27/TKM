@@ -798,18 +798,7 @@ scroll-behavior smooth
   0%, 100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7); }
   50% { box-shadow: 0 0 0 10px rgba(255, 152, 0, 0); }
 }
-.ai-bot { position: fixed; bottom: 30px; right: 30px; width: 70px; height: 70px; background: #25D366; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; transition: all 0.3s ease; z-index: 1000; }
-.ai-bot:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
-.robot-face { width: 45px; height: 45px; background: white; border-radius: 50%; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
-.robot-eyes { display: flex; justify-content: space-between; width: 30px; margin-top: 8px; }
-.eye { width: 8px; height: 8px; background: #25D366; border-radius: 50%; }
-.robot-mouth { width: 20px; height: 10px; border-bottom: 3px solid #25D366; border-radius: 0 0 10px 10px; margin-top: 6px; margin-bottom: 8px; }
-.antenna { position: absolute; top: -12px; width: 3px; height: 10px; background: #25D366; }
-.antenna::after { content: ''; position: absolute; top: -5px; left: -3px; width: 9px; height: 9px; background: white; border-radius: 50%; border: 2px solid #25D366; }
-.cheek { position: absolute; width: 6px; height: 6px; background: #f8b5b5; border-radius: 50%; bottom: 12px; }
-.cheek.left { left: 6px; }
-.cheek.right { right: 6px; }
-.pulse { animation: pulse 2s infinite; }
+
 @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
 .insta-grid { margin-bottom: 30px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 3fr)); gap: 30px; }
 .insta-grid img { border-radius: 20px; transition: var(--transition); width: 100%; height: auto; object-fit: cover; }
