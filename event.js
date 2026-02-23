@@ -1,5 +1,3 @@
-
-
 const CONFIG = {
   // Replace these with your actual SheetDB API URLs
   INSTAGRAM_API: "https://sheetdb.io/api/v1/cs62l4m6ba366",
@@ -141,8 +139,33 @@ function getLocationUrl(lat, lng) {
           top: targetElement.offsetTop - 80, 
           behavior: 'smooth' 
         });
+        
+        // Close navbar after clicking a link
+        const navbarCollapse = document.getElementById('navbarContent');
+        if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+          const bsCollapse = new bootstrap.Collapse(navbarCollapse, {
+            toggle: false
+          });
+          bsCollapse.hide();
+        }
       }
     });
+  });
+
+  // Close navbar when clicking outside
+  document.addEventListener('click', function(event) {
+    const navbarCollapse = document.getElementById('navbarContent');
+    const navbar = document.querySelector('.navbar');
+    
+    if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+      // Check if click is outside navbar
+      if (!navbar.contains(event.target)) {
+        const bsCollapse = new bootstrap.Collapse(navbarCollapse, {
+          toggle: false
+        });
+        bsCollapse.hide();
+      }
+    }
   });
 })();
 
