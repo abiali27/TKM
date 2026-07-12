@@ -11,6 +11,240 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="./custom.css">
   <!-- moved inline styles into custom.css -->
+
+  <!-- Neumorphism (soft UI) additions (kept separate so nothing else is touched) -->
+  <style>
+    :root {
+      --neu-bg: #e6eef0;
+      --neu-bg-dark: #1c2624;
+      --neu-shadow-dark: rgba(163, 184, 189, 0.55);
+      --neu-shadow-light: rgba(255, 255, 255, 0.9);
+      --neu-shadow-dark-strong: rgba(151, 173, 178, 0.7);
+      --neu-text: #3a4d4f;
+      --neu-text-muted: #6b8083;
+      --neu-accent: #3f8a5c;
+      --neu-radius-lg: 28px;
+      --neu-radius-md: 20px;
+      --neu-radius-sm: 14px;
+    }
+
+    * { -webkit-tap-highlight-color: transparent; }
+
+    /* Flat, single-tone backdrop — neumorphism needs a uniform base color to cast shadows against */
+    body {
+      background: var(--neu-bg);
+      color: var(--neu-text);
+    }
+
+    h1, h2, h3, .section-title { color: var(--neu-text); }
+
+    /* Any Bootstrap "bg-light" section now shares the same base tone so no hard rectangle breaks the surface */
+    .bg-light { background-color: var(--neu-bg) !important; }
+
+    /* Navbar — soft raised bar, no visible seam against the body */
+    .navbar {
+      background: var(--neu-bg) !important;
+      box-shadow: 0 8px 20px var(--neu-shadow-dark),
+                  0 -6px 14px var(--neu-shadow-light);
+      border: none !important;
+      transition: box-shadow 0.3s ease;
+    }
+    .navbar-brand { color: var(--neu-text) !important; font-weight: 600; }
+    .navbar-brand img {
+      border-radius: 50%;
+      background: var(--neu-bg);
+      box-shadow: 4px 4px 8px var(--neu-shadow-dark),
+                  -4px -4px 8px var(--neu-shadow-light);
+      padding: 4px;
+    }
+    .nav-link {
+      color: var(--neu-text) !important;
+      border-radius: 12px;
+      padding: 8px 14px !important;
+      margin: 0 4px;
+      transition: box-shadow 0.2s ease, color 0.2s ease;
+    }
+    .nav-link:hover {
+      box-shadow: inset 3px 3px 6px var(--neu-shadow-dark),
+                  inset -3px -3px 6px var(--neu-shadow-light);
+      color: var(--neu-accent) !important;
+    }
+    .navbar-toggler .toggler-line {
+      background-color: var(--neu-text);
+    }
+
+    /* Hero content — no card/box, sits directly on the page background as before */
+    .hero-content {
+      background: none;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 0;
+    }
+    .hero-content h1 { font-weight: 700; }
+    .hero-content p { color: var(--neu-text-muted); }
+
+    /* About content — soft raised panel */
+    .about-content {
+      background: var(--neu-bg);
+      border-radius: var(--neu-radius-md);
+      box-shadow: 10px 10px 20px var(--neu-shadow-dark),
+                  -10px -10px 20px var(--neu-shadow-light);
+      padding: 2.25rem;
+    }
+    .about-content p { color: var(--neu-text-muted); }
+
+    /* Activity cards — soft raised tiles with a gentle lift on hover */
+    .horizontal-scroll-item {
+      background: var(--neu-bg) !important;
+      border-radius: var(--neu-radius-md);
+      box-shadow: 9px 9px 18px var(--neu-shadow-dark),
+                  -9px -9px 18px var(--neu-shadow-light);
+      border: none !important;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+    .horizontal-scroll-item:hover {
+      box-shadow: 13px 13px 26px var(--neu-shadow-dark-strong),
+                  -13px -13px 26px var(--neu-shadow-light);
+      transform: translateY(-3px);
+    }
+    .horizontal-scroll-item i {
+      color: var(--neu-accent);
+      background: var(--neu-bg);
+      width: 56px;
+      height: 56px;
+      line-height: 56px;
+      border-radius: 50%;
+      display: inline-block;
+      text-align: center;
+      box-shadow: inset 4px 4px 8px var(--neu-shadow-dark),
+                  inset -4px -4px 8px var(--neu-shadow-light);
+      margin-bottom: 0.75rem;
+      font-size: 1.1rem;
+    }
+    .horizontal-scroll-item p { color: var(--neu-text-muted); }
+
+    /* Events feed / Instagram feed — keep the soft inset panel look */
+    #upcomingEventsContainer,
+    #instagramFeed {
+      background: var(--neu-bg);
+      border-radius: var(--neu-radius-md);
+      box-shadow: inset 7px 7px 16px var(--neu-shadow-dark),
+                  inset -7px -7px 16px var(--neu-shadow-light);
+      padding: 1.75rem;
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    /* Past events list — no box, plain background as before */
+    #eventsList {
+      background: none;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 0;
+    }
+    .spinner-border.text-primary { color: var(--neu-accent) !important; }
+
+    /* Buttons — soft raised, pressed on click */
+    .btn-custom,
+    .quick-btn,
+    .footer-location-btn button {
+      background: var(--neu-bg) !important;
+      border: none !important;
+      border-radius: var(--neu-radius-sm) !important;
+      box-shadow: 7px 7px 14px var(--neu-shadow-dark),
+                  -7px -7px 14px var(--neu-shadow-light);
+      color: var(--neu-accent) !important;
+      font-weight: 500;
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .btn-custom:hover,
+    .quick-btn:hover,
+    .footer-location-btn button:hover {
+      box-shadow: 4px 4px 8px var(--neu-shadow-dark),
+                  -4px -4px 8px var(--neu-shadow-light);
+      color: var(--neu-accent) !important;
+    }
+    .btn-custom:active,
+    .quick-btn:active,
+    .footer-location-btn button:active {
+      box-shadow: inset 5px 5px 10px var(--neu-shadow-dark-strong),
+                  inset -5px -5px 10px var(--neu-shadow-light);
+      transform: translateY(1px);
+    }
+    .btn-custom:focus-visible,
+    .quick-btn:focus-visible {
+      outline: 2px solid var(--neu-accent);
+      outline-offset: 3px;
+    }
+
+    /* Footer — dark neumorphism variant: same soft-shadow logic, inverted tones for a dark surface */
+    footer {
+      background: var(--neu-bg-dark) !important;
+      box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.4),
+                  0 10px 20px rgba(255, 255, 255, 0.02);
+      border-top: none;
+    }
+    footer .footer-logo img {
+      border-radius: 50%;
+      background: var(--neu-bg-dark);
+      box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.45),
+                  -4px -4px 8px rgba(255, 255, 255, 0.03);
+      padding: 4px;
+    }
+    footer .social-links a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--neu-bg-dark);
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.45),
+                  -5px -5px 10px rgba(255, 255, 255, 0.03);
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    footer .social-links a:hover {
+      box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.5),
+                  inset -3px -3px 6px rgba(255, 255, 255, 0.03);
+      transform: translateY(-2px);
+    }
+    .footer-location-btn button {
+      color: #cfe8d6 !important;
+      background: var(--neu-bg-dark) !important;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.45),
+                  -5px -5px 10px rgba(255, 255, 255, 0.03) !important;
+    }
+    .footer-location-btn button:hover {
+      box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.45),
+                  -3px -3px 6px rgba(255, 255, 255, 0.03) !important;
+    }
+    .footer-location-btn button:active {
+      box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.5),
+                  inset -4px -4px 8px rgba(255, 255, 255, 0.03) !important;
+    }
+
+    /* Softer, tighter shadows on small screens so depth reads without feeling heavy */
+    @media (max-width: 576px) {
+      .about-content,
+      .horizontal-scroll-item,
+      #upcomingEventsContainer,
+      #instagramFeed {
+        box-shadow: 6px 6px 12px var(--neu-shadow-dark),
+                    -6px -6px 12px var(--neu-shadow-light);
+      }
+      .btn-custom, .quick-btn {
+        box-shadow: 4px 4px 8px var(--neu-shadow-dark),
+                    -4px -4px 8px var(--neu-shadow-light);
+      }
+    }
+
+    /* Respect reduced-motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      .horizontal-scroll-item, .btn-custom, .quick-btn, footer .social-links a {
+        transition: none !important;
+      }
+    }
+  </style>
 </head>
 <body>
  <nav class="navbar navbar-expand-lg fixed-top" style="background:#ddeedf;">
