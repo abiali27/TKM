@@ -138,11 +138,8 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url('./logo.png');
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: 0.3;
+  background-image: none;
+  opacity: 0;
   z-index: -1;
 }
 

@@ -7,189 +7,377 @@
   <title>Poona Toloba - Community Platform</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="./custom.css">
   <!-- moved inline styles into custom.css -->
 
-  <!-- Neumorphism (soft UI) additions (kept separate so nothing else is touched) -->
+  <!-- Neumorphism (soft UI) additions, elevated with a serif display face + gold accent for a grander, more ceremonial feel. Kept separate so nothing else is touched. -->
   <style>
     :root {
-      --neu-bg: #e6eef0;
-      --neu-bg-dark: #1c2624;
-      --neu-shadow-dark: rgba(163, 184, 189, 0.55);
-      --neu-shadow-light: rgba(255, 255, 255, 0.9);
-      --neu-shadow-dark-strong: rgba(151, 173, 178, 0.7);
-      --neu-text: #3a4d4f;
-      --neu-text-muted: #6b8083;
-      --neu-accent: #3f8a5c;
-      --neu-radius-lg: 28px;
-      --neu-radius-md: 20px;
+      --neu-bg: #e9f0ee;
+      --neu-bg-dark: #0d1712;
+      --neu-shadow-dark: rgba(160, 182, 175, 0.55);
+      --neu-shadow-light: rgba(255, 255, 255, 0.92);
+      --neu-shadow-dark-strong: rgba(148, 171, 163, 0.72);
+      --neu-text: #22352f;
+      --neu-text-muted: #5f7570;
+      --neu-accent: #1f6b46;
+      --neu-accent-deep: #164f34;
+      --gold: #b3902f;
+      --gold-light: #d8bc73;
+      --gold-soft: rgba(179, 144, 47, 0.28);
+      --neu-radius-lg: 30px;
+      --neu-radius-md: 22px;
       --neu-radius-sm: 14px;
+      --neu-ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --serif: 'Cormorant Garamond', 'Times New Roman', serif;
     }
 
     * { -webkit-tap-highlight-color: transparent; }
 
-    /* Flat, single-tone backdrop — neumorphism needs a uniform base color to cast shadows against */
     body {
-      background: var(--neu-bg);
+      background: linear-gradient(160deg, #eef4f2 0%, #e7eeec 45%, #e2eae7 100%);
       color: var(--neu-text);
+      letter-spacing: 0.1px;
     }
 
-    h1, h2, h3, .section-title { color: var(--neu-text); }
+    /* ---------- Grander typography ---------- */
+    h1, h2, .section-title {
+      font-family: var(--serif);
+      color: var(--neu-text);
+      letter-spacing: 0.3px;
+    }
+    h3 { color: var(--neu-text); }
 
-    /* Any Bootstrap "bg-light" section now shares the same base tone so no hard rectangle breaks the surface */
-    .bg-light { background-color: var(--neu-bg) !important; }
+    .section-title {
+      font-weight: 600;
+      font-size: 2.4rem;
+      margin-bottom: 0.6rem;
+      position: relative;
+    }
+    /* eyebrow label above every section title for a more ceremonial, considered rhythm */
+    .section::before,
+    #contact::before {
+      display: block;
+      text-align: center;
+      content: "";
+    }
+    .section-title {
+      margin-bottom: 0.75rem;
+    }
+    .section-title + p,
+    .section-title ~ .row {
+      margin-top: 0.5rem;
+    }
 
-    /* Navbar — soft raised bar, no visible seam against the body */
+    /* Ornamental divider — a small repeating diamond motif, the signature element tying every section together */
+    .section-title::after {
+      content: "";
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 120px;
+      height: 14px;
+      margin: 18px auto 2.5rem;
+      background-image:
+        linear-gradient(45deg, var(--gold-light) 25%, transparent 25%, transparent 75%, var(--gold-light) 75%),
+        linear-gradient(45deg, var(--gold-light) 25%, transparent 25%, transparent 75%, var(--gold-light) 75%);
+      background-position: 0 0, 8px 0;
+      background-size: 8px 8px;
+      background-repeat: repeat-x;
+      opacity: 0.85;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 20%, #000 80%, transparent);
+      mask-image: linear-gradient(90deg, transparent, #000 20%, #000 80%, transparent);
+    }
+
+    /* Any Bootstrap "bg-light" section shares the same base tone so no hard rectangle breaks the surface */
+    .bg-light { background-color: transparent !important; }
+    .section { padding-top: 5.5rem; padding-bottom: 5.5rem; }
+
+    /* ---------- Navbar — grander, with a hairline gold seam ---------- */
     .navbar {
       background: var(--neu-bg) !important;
-      box-shadow: 0 8px 20px var(--neu-shadow-dark),
+      box-shadow: 0 10px 24px var(--neu-shadow-dark),
                   0 -6px 14px var(--neu-shadow-light);
       border: none !important;
-      transition: box-shadow 0.3s ease;
+      border-bottom: 1px solid var(--gold-soft) !important;
+      transition: box-shadow 0.35s var(--neu-ease);
+      padding-top: 0.4rem;
+      padding-bottom: 0.4rem;
     }
-    .navbar-brand { color: var(--neu-text) !important; font-weight: 600; }
+    .navbar-brand {
+      color: var(--neu-text) !important;
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 1.6rem;
+      letter-spacing: 0.4px;
+    }
     .navbar-brand img {
       border-radius: 50%;
       background: var(--neu-bg);
-      box-shadow: 4px 4px 8px var(--neu-shadow-dark),
-                  -4px -4px 8px var(--neu-shadow-light);
+      box-shadow: 5px 5px 10px var(--neu-shadow-dark),
+                  -5px -5px 10px var(--neu-shadow-light),
+                  0 0 0 2px var(--gold-soft);
       padding: 4px;
+      transition: box-shadow 0.35s var(--neu-ease);
     }
     .nav-link {
       color: var(--neu-text) !important;
       border-radius: 12px;
-      padding: 8px 14px !important;
-      margin: 0 4px;
-      transition: box-shadow 0.2s ease, color 0.2s ease;
+      padding: 8px 16px !important;
+      margin: 0 3px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      transition: box-shadow 0.25s var(--neu-ease), color 0.25s var(--neu-ease);
     }
     .nav-link:hover {
-      box-shadow: inset 3px 3px 6px var(--neu-shadow-dark),
-                  inset -3px -3px 6px var(--neu-shadow-light);
-      color: var(--neu-accent) !important;
+      box-shadow: inset 3px 3px 7px var(--neu-shadow-dark),
+                  inset -3px -3px 7px var(--neu-shadow-light);
+      color: var(--gold) !important;
     }
-    .navbar-toggler .toggler-line {
-      background-color: var(--neu-text);
-    }
+    .navbar-toggler .toggler-line { background-color: var(--neu-text); }
 
-    /* Hero content — no card/box, sits directly on the page background as before */
+    /* ---------- Hero — larger scale, ceremonial framing ---------- */
+    .hero {
+      min-height: 78vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      padding-top: 90px;
+      overflow: hidden;
+    }
+    /* Background logo watermark — sits behind the hero copy, faded so it reads as texture, not a competing element */
+    .hero-logo-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(46vw, 560px);
+      height: min(46vw, 560px);
+      background-image: url('logo.png');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      opacity: 0.07;
+      filter: grayscale(35%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero .container {
+      position: relative;
+      z-index: 1;
+    }
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 64px;
+      height: 64px;
+      border: 1.5px solid var(--gold-soft);
+      opacity: 0.9;
+    }
+    .hero::before {
+      top: 28px; left: 28px;
+      border-right: none; border-bottom: none;
+    }
+    .hero::after {
+      bottom: 28px; right: 28px;
+      border-left: none; border-top: none;
+    }
     .hero-content {
       background: none;
       border-radius: 0;
       box-shadow: none;
       padding: 0;
+      max-width: 760px;
+      margin: 0 auto;
+      text-align: center;
     }
-    .hero-content h1 { font-weight: 700; }
-    .hero-content p { color: var(--neu-text-muted); }
+    .hero-content h1 {
+      font-weight: 700;
+      font-size: clamp(2.6rem, 5vw, 4.2rem);
+      letter-spacing: 0.4px;
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+    }
+    .hero-content h1::after {
+      content: "";
+      display: block;
+      width: 90px;
+      height: 2px;
+      margin: 22px auto 22px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .hero-content p {
+      color: var(--neu-text-muted);
+      font-weight: 300;
+      font-size: 1.2rem;
+      letter-spacing: 0.4px;
+      margin-bottom: 2.25rem;
+    }
+    .hero-content .btn-custom {
+      margin: 0 8px;
+      padding: 12px 28px;
+      font-size: 1.02rem;
+    }
 
-    /* About content — soft raised panel */
+    /* ---------- About content — soft raised panel, gold-edged for gravitas ---------- */
     .about-content {
-      background: var(--neu-bg);
+      background: linear-gradient(145deg, #eef4f2, #e5edeb);
       border-radius: var(--neu-radius-md);
-      box-shadow: 10px 10px 20px var(--neu-shadow-dark),
-                  -10px -10px 20px var(--neu-shadow-light);
-      padding: 2.25rem;
+      box-shadow: 12px 12px 24px var(--neu-shadow-dark),
+                  -12px -12px 24px var(--neu-shadow-light);
+      padding: 3rem 2.75rem;
+      transition: box-shadow 0.4s var(--neu-ease);
+      position: relative;
     }
-    .about-content p { color: var(--neu-text-muted); }
+    .about-content::before {
+      content: "\201C";
+      font-family: var(--serif);
+      font-size: 5rem;
+      color: var(--gold-soft);
+      position: absolute;
+      top: -6px;
+      left: 26px;
+      line-height: 1;
+    }
+    .about-content:hover {
+      box-shadow: 14px 14px 28px var(--neu-shadow-dark-strong),
+                  -14px -14px 28px var(--neu-shadow-light);
+    }
+    .about-content p {
+      color: var(--neu-text-muted);
+      line-height: 1.85;
+      font-size: 1.08rem;
+    }
 
-    /* Activity cards — soft raised tiles with a gentle lift on hover */
+    /* ---------- Activity cards — soft raised tiles, gold-ringed icons ---------- */
     .horizontal-scroll-item {
-      background: var(--neu-bg) !important;
+      background: linear-gradient(150deg, #eef4f2, #e5edeb) !important;
       border-radius: var(--neu-radius-md);
       box-shadow: 9px 9px 18px var(--neu-shadow-dark),
                   -9px -9px 18px var(--neu-shadow-light);
       border: none !important;
-      transition: box-shadow 0.3s ease, transform 0.3s ease;
+      transition: box-shadow 0.4s var(--neu-ease), transform 0.4s var(--neu-ease);
+      padding: 2rem 1.6rem;
     }
     .horizontal-scroll-item:hover {
-      box-shadow: 13px 13px 26px var(--neu-shadow-dark-strong),
-                  -13px -13px 26px var(--neu-shadow-light);
-      transform: translateY(-3px);
+      box-shadow: 16px 16px 32px var(--neu-shadow-dark-strong),
+                  -16px -16px 32px var(--neu-shadow-light);
+      transform: translateY(-6px);
+    }
+    .horizontal-scroll-item div {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 1.25rem;
+      margin-top: 0.35rem;
+      letter-spacing: 0.2px;
     }
     .horizontal-scroll-item i {
       color: var(--neu-accent);
       background: var(--neu-bg);
-      width: 56px;
-      height: 56px;
-      line-height: 56px;
+      width: 62px;
+      height: 62px;
+      line-height: 62px;
       border-radius: 50%;
       display: inline-block;
       text-align: center;
-      box-shadow: inset 4px 4px 8px var(--neu-shadow-dark),
-                  inset -4px -4px 8px var(--neu-shadow-light);
-      margin-bottom: 0.75rem;
-      font-size: 1.1rem;
+      box-shadow: inset 4px 4px 9px var(--neu-shadow-dark),
+                  inset -4px -4px 9px var(--neu-shadow-light),
+                  0 0 0 2px var(--gold-soft);
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+      transition: box-shadow 0.4s var(--neu-ease), color 0.4s var(--neu-ease);
     }
-    .horizontal-scroll-item p { color: var(--neu-text-muted); }
+    .horizontal-scroll-item:hover i {
+      color: var(--gold);
+      box-shadow: inset 4px 4px 9px var(--neu-shadow-dark),
+                  inset -4px -4px 9px var(--neu-shadow-light),
+                  0 0 0 2px var(--gold);
+    }
+    .horizontal-scroll-item p { color: var(--neu-text-muted); line-height: 1.65; }
 
-    /* Events feed / Instagram feed — keep the soft inset panel look */
+    /* ---------- Events feed / Instagram feed ---------- */
     #upcomingEventsContainer,
     #instagramFeed {
-      background: var(--neu-bg);
+      background: linear-gradient(150deg, #e5edeb, #eef4f2);
       border-radius: var(--neu-radius-md);
-      box-shadow: inset 7px 7px 16px var(--neu-shadow-dark),
-                  inset -7px -7px 16px var(--neu-shadow-light);
-      padding: 1.75rem;
+      box-shadow: inset 8px 8px 18px var(--neu-shadow-dark),
+                  inset -8px -8px 18px var(--neu-shadow-light);
+      padding: 2rem;
       margin-left: 0;
       margin-right: 0;
     }
-
-    /* Past events list — no box, plain background as before */
-    #eventsList {
-      background: none;
-      border-radius: 0;
-      box-shadow: none;
-      padding: 0;
-    }
+    #eventsList { background: none; border-radius: 0; box-shadow: none; padding: 0; }
     .spinner-border.text-primary { color: var(--neu-accent) !important; }
 
-    /* Buttons — soft raised, pressed on click */
+    /* ---------- Buttons — soft raised, gold text-on-hover for a premium touch ---------- */
     .btn-custom,
     .quick-btn,
     .footer-location-btn button {
-      background: var(--neu-bg) !important;
+      background: linear-gradient(150deg, #eef4f2, #e5edeb) !important;
       border: none !important;
       border-radius: var(--neu-radius-sm) !important;
-      box-shadow: 7px 7px 14px var(--neu-shadow-dark),
-                  -7px -7px 14px var(--neu-shadow-light);
+      box-shadow: 7px 7px 15px var(--neu-shadow-dark),
+                  -7px -7px 15px var(--neu-shadow-light);
       color: var(--neu-accent) !important;
       font-weight: 500;
-      transition: box-shadow 0.2s ease, transform 0.2s ease;
+      letter-spacing: 0.2px;
+      padding: 11px 22px;
+      transition: box-shadow 0.3s var(--neu-ease), transform 0.3s var(--neu-ease), color 0.3s var(--neu-ease);
     }
     .btn-custom:hover,
     .quick-btn:hover,
     .footer-location-btn button:hover {
-      box-shadow: 4px 4px 8px var(--neu-shadow-dark),
-                  -4px -4px 8px var(--neu-shadow-light);
-      color: var(--neu-accent) !important;
+      box-shadow: 4px 4px 9px var(--neu-shadow-dark),
+                  -4px -4px 9px var(--neu-shadow-light);
+      color: var(--gold) !important;
+      transform: translateY(-1px);
     }
     .btn-custom:active,
     .quick-btn:active,
     .footer-location-btn button:active {
-      box-shadow: inset 5px 5px 10px var(--neu-shadow-dark-strong),
-                  inset -5px -5px 10px var(--neu-shadow-light);
+      box-shadow: inset 5px 5px 11px var(--neu-shadow-dark-strong),
+                  inset -5px -5px 11px var(--neu-shadow-light);
       transform: translateY(1px);
     }
     .btn-custom:focus-visible,
     .quick-btn:focus-visible {
-      outline: 2px solid var(--neu-accent);
+      outline: 2px solid var(--gold);
       outline-offset: 3px;
     }
 
-    /* Footer — dark neumorphism variant: same soft-shadow logic, inverted tones for a dark surface */
+    /* ---------- Footer — deep, ceremonial, gold-trimmed ---------- */
     footer {
-      background: var(--neu-bg-dark) !important;
-      box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.4),
+      background: linear-gradient(160deg, #14211b, #0a120e) !important;
+      box-shadow: 0 -12px 24px rgba(0, 0, 0, 0.4),
                   0 10px 20px rgba(255, 255, 255, 0.02);
-      border-top: none;
+      border-top: 1px solid var(--gold-soft);
+      position: relative;
+    }
+    footer::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translate(-50%, -50%) rotate(45deg);
+      width: 10px; height: 10px;
+      background: var(--gold);
+      opacity: 0.85;
     }
     footer .footer-logo img {
       border-radius: 50%;
       background: var(--neu-bg-dark);
-      box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.45),
-                  -4px -4px 8px rgba(255, 255, 255, 0.03);
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5),
+                  -5px -5px 10px rgba(255, 255, 255, 0.035),
+                  0 0 0 2px var(--gold-soft);
       padding: 4px;
+    }
+    footer .footer-logo span {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
     }
     footer .social-links a {
       display: inline-flex;
@@ -199,48 +387,69 @@
       height: 42px;
       border-radius: 50%;
       background: var(--neu-bg-dark);
-      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.45),
-                  -5px -5px 10px rgba(255, 255, 255, 0.03);
-      transition: box-shadow 0.2s ease, transform 0.2s ease;
+      box-shadow: 5px 5px 11px rgba(0, 0, 0, 0.5),
+                  -5px -5px 11px rgba(255, 255, 255, 0.035);
+      transition: box-shadow 0.3s var(--neu-ease), transform 0.3s var(--neu-ease), color 0.3s var(--neu-ease);
+      color: #cfe8d6;
     }
     footer .social-links a:hover {
-      box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.5),
-                  inset -3px -3px 6px rgba(255, 255, 255, 0.03);
-      transform: translateY(-2px);
+      box-shadow: inset 3px 3px 7px rgba(0, 0, 0, 0.55),
+                  inset -3px -3px 7px rgba(255, 255, 255, 0.035);
+      transform: translateY(-3px);
+      color: var(--gold-light);
     }
     .footer-location-btn button {
-      color: #cfe8d6 !important;
+      color: #d8e6dd !important;
       background: var(--neu-bg-dark) !important;
-      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.45),
-                  -5px -5px 10px rgba(255, 255, 255, 0.03) !important;
+      box-shadow: 5px 5px 11px rgba(0, 0, 0, 0.5),
+                  -5px -5px 11px rgba(255, 255, 255, 0.035) !important;
     }
     .footer-location-btn button:hover {
-      box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.45),
-                  -3px -3px 6px rgba(255, 255, 255, 0.03) !important;
+      box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.45),
+                  -3px -3px 7px rgba(255, 255, 255, 0.035) !important;
+      color: var(--gold-light) !important;
     }
     .footer-location-btn button:active {
-      box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.5),
-                  inset -4px -4px 8px rgba(255, 255, 255, 0.03) !important;
+      box-shadow: inset 4px 4px 9px rgba(0, 0, 0, 0.55),
+                  inset -4px -4px 9px rgba(255, 255, 255, 0.035) !important;
     }
+    footer h3 {
+      font-family: var(--serif);
+      color: var(--gold-light);
+      font-weight: 600;
+      font-size: 1.3rem;
+      letter-spacing: 0.3px;
+    }
+    footer li, footer p { color: #a9bdb9; }
+    footer .footer-links a, footer .footer-contact a {
+      color: #a9bdb9;
+      transition: color 0.25s var(--neu-ease);
+    }
+    footer .footer-links a:hover, footer .footer-contact a:hover { color: var(--gold-light); }
+    footer .copyright { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 1.5rem; margin-top: 1.5rem; }
 
-    /* Softer, tighter shadows on small screens so depth reads without feeling heavy */
+    /* ---------- Mobile ---------- */
     @media (max-width: 576px) {
+      .hero { min-height: 68vh; padding-top: 70px; }
+      .hero::before, .hero::after { width: 40px; height: 40px; }
+      .hero-logo-watermark { width: 78vw; height: 78vw; opacity: 0.06; }
+      .section { padding-top: 3.5rem; padding-bottom: 3.5rem; }
+      .section-title { font-size: 1.9rem; }
       .about-content,
       .horizontal-scroll-item,
       #upcomingEventsContainer,
       #instagramFeed {
-        box-shadow: 6px 6px 12px var(--neu-shadow-dark),
-                    -6px -6px 12px var(--neu-shadow-light);
+        box-shadow: 6px 6px 13px var(--neu-shadow-dark),
+                    -6px -6px 13px var(--neu-shadow-light);
       }
       .btn-custom, .quick-btn {
-        box-shadow: 4px 4px 8px var(--neu-shadow-dark),
-                    -4px -4px 8px var(--neu-shadow-light);
+        box-shadow: 4px 4px 9px var(--neu-shadow-dark),
+                    -4px -4px 9px var(--neu-shadow-light);
       }
     }
 
-    /* Respect reduced-motion preferences */
     @media (prefers-reduced-motion: reduce) {
-      .horizontal-scroll-item, .btn-custom, .quick-btn, footer .social-links a {
+      .horizontal-scroll-item, .btn-custom, .quick-btn, footer .social-links a, .about-content, .navbar-brand img, .nav-link {
         transition: none !important;
       }
     }
@@ -252,7 +461,7 @@
 
     <!-- Logo -->
     <a class="navbar-brand d-flex align-items-center" href="#home">
-      <img src="logo.png" style="height:60px; margin-right:15px;">
+      <img src="logo.png" alt="Toloba Poona Logo" style="height:60px; margin-right:15px;">
       Toloba Poona
     </a>
 
@@ -430,7 +639,6 @@
       <div class="footer-content">
         <div class="footer-about">
           <div class="footer-logo">
-            <img src="logo.png" alt="Poona Toloba Logo" loading="lazy">
             <span>Toloba Poona</span>
           </div>
           <p>Empowering students and serving the community through education, spirituality, and social initiatives.</p>
