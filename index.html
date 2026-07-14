@@ -365,19 +365,29 @@
       background: var(--gold);
       opacity: 0.85;
     }
+    footer .footer-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.9rem;
+      margin-bottom: 1.2rem;
+    }
     footer .footer-logo img {
+      width: 70px;
+      height: 70px;
+      object-fit: contain;
       border-radius: 50%;
       background: var(--neu-bg-dark);
       box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5),
                   -5px -5px 10px rgba(255, 255, 255, 0.035),
                   0 0 0 2px var(--gold-soft);
-      padding: 4px;
+      padding: 6px;
     }
     footer .footer-logo span {
       font-family: var(--serif);
       font-size: 1.4rem;
       font-weight: 600;
       letter-spacing: 0.3px;
+      color: #f5f2e7;
     }
     footer .social-links a {
       display: inline-flex;
@@ -639,6 +649,7 @@
       <div class="footer-content">
         <div class="footer-about">
           <div class="footer-logo">
+            <img src="logo.png" alt="Toloba Poona Logo" />
             <span>Toloba Poona</span>
           </div>
           <p>Empowering students and serving the community through education, spirituality, and social initiatives.</p>
