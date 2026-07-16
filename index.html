@@ -150,19 +150,42 @@
     /* Background logo watermark — sits behind the hero copy, faded so it reads as texture, not a competing element */
     .hero-logo-watermark {
       position: absolute;
-      top: 50%;
+      top: 42%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: min(46vw, 560px);
-      height: min(46vw, 560px);
+      width: 780px;
+      height: 780px;
+      max-width: 92%;
+      max-height: 92%;
       background-image: url('logo.png');
       background-repeat: no-repeat;
       background-position: center;
       background-size: contain;
-      opacity: 0.07;
-      filter: grayscale(35%);
+      opacity: 0.13;
+      filter: grayscale(35%) brightness(0.8);
       pointer-events: none;
       z-index: 0;
+      transition: width 0.3s ease, height 0.3s ease;
+    }
+    /* Large laptops / desktops */
+    @media (min-width: 1400px) {
+      .hero-logo-watermark { width: 1100px; height: 1100px; }
+    }
+    /* Small laptops / large tablets */
+    @media (max-width: 1199px) {
+      .hero-logo-watermark { width: 850px; height: 850px; }
+    }
+    /* Tablets */
+    @media (max-width: 900px) {
+      .hero-logo-watermark { width: 460px; height: 460px; }
+    }
+    /* Large phones */
+    @media (max-width: 600px) {
+      .hero-logo-watermark { width: 300px; height: 300px; }
+    }
+    /* Small phones */
+    @media (max-width: 400px) {
+      .hero-logo-watermark { width: 240px; height: 240px; }
     }
     .hero .container {
       position: relative;
@@ -442,7 +465,6 @@
     @media (max-width: 576px) {
       .hero { min-height: 68vh; padding-top: 70px; }
       .hero::before, .hero::after { width: 40px; height: 40px; }
-      .hero-logo-watermark { width: 78vw; height: 78vw; opacity: 0.06; }
       .section { padding-top: 3.5rem; padding-bottom: 3.5rem; }
       .section-title { font-size: 1.9rem; }
       .about-content,
