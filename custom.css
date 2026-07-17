@@ -227,40 +227,14 @@ body {
   display: inline-block;
 }
 
-.section-title::after {
-  content: '';
-  position: absolute;
-  bottom: -15px;
-  left: 0;
-  width: 50px;
-  height: 4px;
-  background: var(--primary);
-  border-radius: 2px;
-  transition: var(--transition);
-}
-
-.section-title:hover::after {
-  width: 80px;
-}
-
 /* ========== ABOUT ========== */
-.about-content {
+..about-content {
   background-color: #b6cdbd;
   border-radius: 15px;
   padding: 50px;
   box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
-}
-
-.about-content::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 5px;
-  height: 100%;
-  background: linear-gradient(to bottom, var(--primary), var(--secondary));
 }
 
 /* ========== HORIZONTAL SCROLL (ACTIVITIES) ========== */
