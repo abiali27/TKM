@@ -525,9 +525,264 @@
         transition: none !important;
       }
     }
+
+    /* ================= LOGIN GATE ================= */
+    body.login-locked { overflow: hidden; }
+    body.login-locked > *:not(#loginOverlay) { display: none !important; }
+
+    #loginOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: linear-gradient(160deg, #eef4f2 0%, #e7eeec 45%, #e2eae7 100%);
+      overflow: hidden;
+    }
+    #loginOverlay.hide {
+      animation: overlayFadeOut 0.5s var(--neu-ease) forwards;
+      pointer-events: none;
+    }
+    @keyframes overlayFadeOut {
+      to { opacity: 0; visibility: hidden; }
+    }
+
+    #loginOverlay .bg-watermark {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 900px; height: 900px;
+      max-width: 140vw; max-height: 140vw;
+      transform: translate(-50%, -50%);
+      background-image: url('logo.png');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      opacity: 0.07;
+      filter: grayscale(40%) brightness(0.8);
+      pointer-events: none;
+      animation: driftLogo 22s ease-in-out infinite;
+    }
+    @keyframes driftLogo {
+      0%, 100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+      50% { transform: translate(-50%, -52%) scale(1.04) rotate(1.2deg); }
+    }
+    .mote {
+      position: absolute;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0.35;
+      pointer-events: none;
+      animation: floatUp linear infinite;
+    }
+    @keyframes floatUp {
+      0%   { transform: translateY(0) translateX(0); opacity: 0; }
+      10%  { opacity: 0.45; }
+      90%  { opacity: 0.25; }
+      100% { transform: translateY(-110vh) translateX(20px); opacity: 0; }
+    }
+    .login-corner {
+      position: absolute;
+      width: 64px; height: 64px;
+      border: 1.5px solid var(--gold-soft);
+      opacity: 0.9;
+    }
+    .login-corner.tl { top: 28px; left: 28px; border-right: none; border-bottom: none; }
+    .login-corner.br { bottom: 28px; right: 28px; border-left: none; border-top: none; }
+
+    .login-wrap {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 440px;
+      opacity: 0;
+      transform: translateY(28px);
+      animation: riseIn 0.9s var(--neu-ease) 0.15s forwards;
+    }
+    @keyframes riseIn { to { opacity: 1; transform: translateY(0); } }
+
+    .login-brand { text-align: center; margin-bottom: 1.6rem; }
+    .login-brand img {
+      width: 74px; height: 74px;
+      border-radius: 50%;
+      background: var(--neu-bg);
+      object-fit: contain;
+      padding: 6px;
+      box-shadow: 6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light), 0 0 0 2px var(--gold-soft);
+      margin-bottom: 0.9rem;
+      animation: logoPulse 3.6s ease-in-out infinite;
+    }
+    @keyframes logoPulse {
+      0%, 100% { box-shadow: 6px 6px 12px var(--neu-shadow-dark), -6px -6px 12px var(--neu-shadow-light), 0 0 0 2px var(--gold-soft); }
+      50% { box-shadow: 6px 6px 14px var(--neu-shadow-dark), -6px -6px 14px var(--neu-shadow-light), 0 0 0 4px var(--gold-soft); }
+    }
+    .login-brand h1 {
+      font-family: var(--serif); font-weight: 700; font-size: 2rem; margin: 0; letter-spacing: 0.4px;
+    }
+    .login-brand h1::after {
+      content: ""; display: block; width: 70px; height: 2px; margin: 14px auto 10px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .login-brand p { color: var(--neu-text-muted); font-weight: 300; font-size: 0.98rem; margin: 0; }
+
+    .login-card {
+      background: linear-gradient(145deg, #eef4f2, #e5edeb);
+      border-radius: var(--neu-radius-lg);
+      box-shadow: 14px 14px 28px var(--neu-shadow-dark), -14px -14px 28px var(--neu-shadow-light);
+      padding: 2.4rem 2.1rem 2rem;
+      position: relative;
+    }
+    .login-card::before {
+      content: "\201C"; font-family: var(--serif); font-size: 4.2rem; color: var(--gold-soft);
+      position: absolute; top: -4px; left: 22px; line-height: 1;
+    }
+    .login-field { position: relative; margin-bottom: 1.5rem; }
+    .login-field i.field-icon {
+      position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+      color: var(--neu-accent); font-size: 0.95rem; transition: color 0.3s var(--neu-ease);
+    }
+    .login-field input {
+      width: 100%; border: none; outline: none; background: var(--neu-bg);
+      border-radius: var(--neu-radius-sm);
+      box-shadow: inset 5px 5px 10px var(--neu-shadow-dark), inset -5px -5px 10px var(--neu-shadow-light);
+      padding: 15px 18px 15px 46px; font-family: 'Poppins', sans-serif; font-size: 1rem;
+      color: var(--neu-text); transition: box-shadow 0.3s var(--neu-ease);
+    }
+    .login-field input::placeholder { color: var(--neu-text-muted); opacity: 0.7; }
+    .login-field input:focus {
+      box-shadow: inset 6px 6px 12px var(--neu-shadow-dark-strong), inset -6px -6px 12px var(--neu-shadow-light), 0 0 0 2px var(--gold-soft);
+    }
+    .login-field input:focus + i.field-icon,
+    .login-field input:not(:placeholder-shown) + i.field-icon { color: var(--gold); }
+    .login-field .field-error {
+      display: block; min-height: 18px; font-size: 0.78rem; color: #b3452f;
+      margin-top: 6px; margin-left: 4px; opacity: 0; transform: translateY(-4px);
+      transition: opacity 0.25s var(--neu-ease), transform 0.25s var(--neu-ease);
+    }
+    .login-field .field-error.show { opacity: 1; transform: translateY(0); }
+    .login-field.shake { animation: loginShake 0.4s; }
+    @keyframes loginShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    .btn-enter {
+      width: 100%; border: none; border-radius: var(--neu-radius-sm);
+      background: linear-gradient(150deg, #eef4f2, #e5edeb);
+      box-shadow: 7px 7px 15px var(--neu-shadow-dark), -7px -7px 15px var(--neu-shadow-light);
+      color: var(--neu-accent); font-family: 'Poppins', sans-serif; font-weight: 600; letter-spacing: 0.3px;
+      font-size: 1.02rem; padding: 14px 22px; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; gap: 10px; transition: box-shadow 0.3s var(--neu-ease), transform 0.3s var(--neu-ease), color 0.3s var(--neu-ease);
+    }
+    .btn-enter:hover {
+      box-shadow: 4px 4px 9px var(--neu-shadow-dark), -4px -4px 9px var(--neu-shadow-light);
+      color: var(--gold); transform: translateY(-1px);
+    }
+    .btn-enter:active {
+      box-shadow: inset 5px 5px 11px var(--neu-shadow-dark-strong), inset -5px -5px 11px var(--neu-shadow-light);
+      transform: translateY(1px);
+    }
+    .btn-enter:disabled { opacity: 0.75; cursor: not-allowed; }
+    .login-spinner {
+      width: 18px; height: 18px; border-radius: 50%; border: 2.5px solid var(--gold-soft);
+      border-top-color: var(--gold); animation: loginSpin 0.8s linear infinite; display: none;
+    }
+    @keyframes loginSpin { to { transform: rotate(360deg); } }
+    .login-status {
+      text-align: center; font-size: 0.85rem; margin-top: 1rem; min-height: 18px;
+      color: var(--neu-accent); opacity: 0; transition: opacity 0.3s var(--neu-ease);
+    }
+    .login-status.show { opacity: 1; }
+    .login-status.error { color: #b3452f; }
+
+    @media (max-width: 420px) {
+      .login-card { padding: 2rem 1.5rem 1.7rem; }
+      .login-brand h1 { font-size: 1.7rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #loginOverlay .bg-watermark, .mote, .login-brand img, .login-wrap { animation: none !important; }
+    }
+
+    /* success takeover, shown briefly before the overlay fades */
+    .login-success {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 3;
+      background: linear-gradient(160deg, #eef4f2 0%, #e2eae7 100%);
+      opacity: 0;
+      transition: opacity 0.4s var(--neu-ease);
+    }
+    .login-success.show { display: flex; opacity: 1; }
+    .success-ring {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      background: var(--neu-bg);
+      box-shadow: 10px 10px 20px var(--neu-shadow-dark),
+                  -10px -10px 20px var(--neu-shadow-light),
+                  0 0 0 3px var(--gold-soft);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.4rem;
+      transform: scale(0);
+      animation: successPopIn 0.5s var(--neu-ease) 0.1s forwards;
+    }
+    @keyframes successPopIn { to { transform: scale(1); } }
+    .success-ring i { font-size: 2.1rem; color: var(--gold); }
+    .login-success h2 {
+      font-family: var(--serif); font-weight: 600; font-size: 1.9rem; margin: 0 0 0.4rem;
+    }
+    .login-success p { color: var(--neu-text-muted); font-size: 0.95rem; margin: 0; }
   </style>
 </head>
-<body>
+<body class="login-locked">
+
+  <!-- ================= LOGIN OVERLAY ================= -->
+  <div id="loginOverlay">
+    <div class="login-corner tl"></div>
+    <div class="login-corner br"></div>
+    <div class="bg-watermark"></div>
+    <div id="loginMotes"></div>
+
+    <div class="login-wrap">
+      <div class="login-brand">
+        <img src="logo.png" alt="Toloba Poona Logo">
+        <h1>Toloba Poona</h1>
+        <p>Sign in to continue to the community platform</p>
+      </div>
+
+      <div class="login-card">
+        <form id="loginForm" novalidate>
+          <div class="login-field">
+            <input type="text" id="nameInput" placeholder="Full Name" autocomplete="name" required>
+            <i class="fas fa-user field-icon"></i>
+            <span class="field-error" id="nameError"></span>
+          </div>
+          <div class="login-field">
+            <input type="tel" id="phoneInput" placeholder="Phone Number" autocomplete="tel" inputmode="numeric" maxlength="10" required>
+            <i class="fas fa-phone field-icon"></i>
+            <span class="field-error" id="phoneError"></span>
+          </div>
+          <button type="submit" class="btn-enter" id="submitBtn">
+            <span class="login-spinner" id="btnSpinner"></span>
+            <i class="fas fa-arrow-right-to-bracket" id="btnIcon"></i>
+            <span id="btnLabel">Login</span>
+          </button>
+          <div class="login-status" id="statusMsg"></div>
+        </form>
+      </div>
+    </div>
+
+    <div class="login-success" id="loginSuccess">
+      <div class="success-ring"><i class="fas fa-check"></i></div>
+      <h2>Welcome<span id="welcomeName"></span></h2>
+      <p>Taking you to Toloba Poona...</p>
+    </div>
+  </div>
+
  <nav class="navbar navbar-expand-lg fixed-top" style="background:#ddeedf;">
   <div class="container">
 
@@ -763,5 +1018,157 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script src="./event.js"></script>
+
+  <script>
+  (function () {
+    // ---- CONFIG ----
+    // Paste the Web App URL from your Apps Script deployment here:
+    var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-BxiqrHpP7caghcXBxon8GQkZRsfCi4NwbG1Y3Mi0yEHeSiCvem67ljU4-P5DK7vvBQ/exec";
+    // If true, a visitor who already signed in this browser tab session
+    // won't be asked to log in again until they close the tab.
+    var SKIP_IF_ALREADY_LOGGED_IN = true;
+
+    var overlay = document.getElementById('loginOverlay');
+    var body = document.body;
+
+    function unlockSite() {
+      body.classList.remove('login-locked');
+      overlay.classList.add('hide');
+      // Let AOS re-calculate now that the real content is visible
+      if (window.AOS && typeof AOS.refresh === 'function') {
+        setTimeout(function () { AOS.refresh(); }, 50);
+      }
+    }
+
+    // If already logged in this session, skip the gate entirely.
+    if (SKIP_IF_ALREADY_LOGGED_IN && sessionStorage.getItem('toloba_user_name')) {
+      unlockSite();
+      return;
+    }
+
+    var form = document.getElementById('loginForm');
+    var nameInput = document.getElementById('nameInput');
+    var phoneInput = document.getElementById('phoneInput');
+    var nameError = document.getElementById('nameError');
+    var phoneError = document.getElementById('phoneError');
+    var submitBtn = document.getElementById('submitBtn');
+    var btnSpinner = document.getElementById('btnSpinner');
+    var btnIcon = document.getElementById('btnIcon');
+    var btnLabel = document.getElementById('btnLabel');
+    var statusMsg = document.getElementById('statusMsg');
+    var loginSuccess = document.getElementById('loginSuccess');
+    var welcomeName = document.getElementById('welcomeName');
+
+    function showWelcome(name) {
+      welcomeName.textContent = ', ' + name.split(' ')[0];
+      loginSuccess.classList.add('show');
+      setTimeout(unlockSite, 1500);
+    }
+
+    // ambient gold motes
+    var motesContainer = document.getElementById('loginMotes');
+    for (var i = 0; i < 14; i++) {
+      var m = document.createElement('div');
+      var size = 3 + Math.random() * 4;
+      m.className = 'mote';
+      m.style.width = size + 'px';
+      m.style.height = size + 'px';
+      m.style.left = Math.random() * 100 + 'vw';
+      m.style.bottom = '-20px';
+      m.style.animationDuration = (14 + Math.random() * 12) + 's';
+      m.style.animationDelay = (Math.random() * 10) + 's';
+      motesContainer.appendChild(m);
+    }
+
+    phoneInput.addEventListener('input', function () {
+      phoneInput.value = phoneInput.value.replace(/\D/g, '').slice(0, 10);
+    });
+
+    function showFieldError(inputEl, errorEl, message) {
+      errorEl.textContent = message;
+      errorEl.classList.toggle('show', !!message);
+      var fieldEl = inputEl.closest('.login-field');
+      if (message) {
+        fieldEl.classList.remove('shake');
+        void fieldEl.offsetWidth; // restart animation
+        fieldEl.classList.add('shake');
+      }
+    }
+
+    function validate() {
+      var valid = true;
+      var name = nameInput.value.trim();
+      var phone = phoneInput.value.trim();
+
+      if (name.length < 2) {
+        showFieldError(nameInput, nameError, 'Please enter your full name');
+        valid = false;
+      } else {
+        showFieldError(nameInput, nameError, '');
+      }
+
+      if (!/^[6-9]\d{9}$/.test(phone)) {
+        showFieldError(phoneInput, phoneError, 'Enter a valid 10-digit phone number');
+        valid = false;
+      } else {
+        showFieldError(phoneInput, phoneError, '');
+      }
+      return valid;
+    }
+
+    function setLoading(isLoading) {
+      submitBtn.disabled = isLoading;
+      btnSpinner.style.display = isLoading ? 'inline-block' : 'none';
+      btnIcon.style.display = isLoading ? 'none' : 'inline-block';
+      btnLabel.textContent = isLoading ? 'Signing in...' : 'Enter';
+    }
+
+    function setStatus(message, isError) {
+      statusMsg.textContent = message;
+      statusMsg.classList.toggle('error', !!isError);
+      statusMsg.classList.toggle('show', !!message);
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!validate()) return;
+
+      var name = nameInput.value.trim();
+      var phone = phoneInput.value.trim();
+
+      setLoading(true);
+      setStatus('', false);
+
+      var sendPromise;
+      if (SCRIPT_URL && SCRIPT_URL.indexOf('PASTE_YOUR') === -1) {
+        sendPromise = fetch(SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ name: name, phone: phone })
+        });
+      } else {
+        // Sheet not connected yet — still let the person into the site,
+        // just don't try to log data anywhere.
+        sendPromise = Promise.resolve();
+      }
+
+      sendPromise
+        .then(function () {
+          sessionStorage.setItem('toloba_user_name', name);
+          sessionStorage.setItem('toloba_user_phone', phone);
+          setLoading(false);
+          showWelcome(name);
+        })
+        .catch(function () {
+          // Even if the sheet write fails, don't lock the visitor out of the site.
+          sessionStorage.setItem('toloba_user_name', name);
+          sessionStorage.setItem('toloba_user_phone', phone);
+          setLoading(false);
+          showWelcome(name);
+        });
+    });
+  })();
+  </script>
 </body>
 </html>
