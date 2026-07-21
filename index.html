@@ -1141,7 +1141,7 @@
 
       // 🔧 Maintenance check — blocks login before anything else runs.
       if (MAINTENANCE_MODE) {
-        setStatus('Site is currently under maintenance. Please check back later.', true);
+        setStatus('Site is currently under maintenance. Please check back later.', false);
         return;
       }
 
