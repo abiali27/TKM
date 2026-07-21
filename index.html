@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -1028,6 +1028,12 @@
     // won't be asked to log in again until they close the tab.
     var SKIP_IF_ALREADY_LOGGED_IN = true;
 
+    // 🔧 MAINTENANCE TOGGLE
+    // Set this to true whenever you want to block everyone at the login
+    // screen (e.g. while you're doing site maintenance). Set back to
+    // false to let people log in and enter the site normally again.
+    var MAINTENANCE_MODE = true;
+
     var overlay = document.getElementById('loginOverlay');
     var body = document.body;
 
@@ -1041,7 +1047,8 @@
     }
 
     // If already logged in this session, skip the gate entirely.
-    if (SKIP_IF_ALREADY_LOGGED_IN && sessionStorage.getItem('toloba_user_name')) {
+    // (Maintenance mode still applies below for anyone not already in.)
+    if (!MAINTENANCE_MODE && SKIP_IF_ALREADY_LOGGED_IN && sessionStorage.getItem('toloba_user_name')) {
       unlockSite();
       return;
     }
@@ -1131,6 +1138,13 @@
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
+
+      // 🔧 Maintenance check — blocks login before anything else runs.
+      if (MAINTENANCE_MODE) {
+        setStatus('Site is currently under maintenance. Please check back later.', true);
+        return;
+      }
+
       if (!validate()) return;
 
       var name = nameInput.value.trim();
