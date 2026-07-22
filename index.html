@@ -1028,14 +1028,13 @@
     // won't be asked to log in again until they close the tab.
     var SKIP_IF_ALREADY_LOGGED_IN = true;
 
-    // 🔧 MAINTENANCE TOGGLE
-    // Set this to true whenever you want to block everyone at the login
-    // screen (e.g. while you're doing site maintenance). Set back to
-    // false to let people log in and enter the site normally again.
-    var MAINTENANCE_MODE = false;
-
     var overlay = document.getElementById('loginOverlay');
     var body = document.body;
+    var form = document.getElementById('loginForm');
+    var submitBtn = document.getElementById('submitBtn');
+    var statusMsg = document.getElementById('statusMsg');
+    var loginCard = document.querySelector('.login-card');
+    var loginBrandP = document.querySelector('.login-brand p');
 
     function unlockSite() {
       body.classList.remove('login-locked');
@@ -1046,142 +1045,161 @@
       }
     }
 
-    // If already logged in this session, skip the gate entirely.
-    // (Maintenance mode still applies below for anyone not already in.)
-    if (!MAINTENANCE_MODE && SKIP_IF_ALREADY_LOGGED_IN && sessionStorage.getItem('toloba_user_name')) {
-      unlockSite();
-      return;
-    }
-
-    var form = document.getElementById('loginForm');
-    var nameInput = document.getElementById('nameInput');
-    var phoneInput = document.getElementById('phoneInput');
-    var nameError = document.getElementById('nameError');
-    var phoneError = document.getElementById('phoneError');
-    var submitBtn = document.getElementById('submitBtn');
-    var btnSpinner = document.getElementById('btnSpinner');
-    var btnIcon = document.getElementById('btnIcon');
-    var btnLabel = document.getElementById('btnLabel');
-    var statusMsg = document.getElementById('statusMsg');
-    var loginSuccess = document.getElementById('loginSuccess');
-    var welcomeName = document.getElementById('welcomeName');
-
-    function showWelcome(name) {
-      welcomeName.textContent = ', ' + name.split(' ')[0];
-      loginSuccess.classList.add('show');
-      setTimeout(unlockSite, 1500);
-    }
-
-    // ambient gold motes
-    var motesContainer = document.getElementById('loginMotes');
-    for (var i = 0; i < 14; i++) {
-      var m = document.createElement('div');
-      var size = 3 + Math.random() * 4;
-      m.className = 'mote';
-      m.style.width = size + 'px';
-      m.style.height = size + 'px';
-      m.style.left = Math.random() * 100 + 'vw';
-      m.style.bottom = '-20px';
-      m.style.animationDuration = (14 + Math.random() * 12) + 's';
-      m.style.animationDelay = (Math.random() * 10) + 's';
-      motesContainer.appendChild(m);
-    }
-
-    phoneInput.addEventListener('input', function () {
-      phoneInput.value = phoneInput.value.replace(/\D/g, '').slice(0, 10);
-    });
-
-    function showFieldError(inputEl, errorEl, message) {
-      errorEl.textContent = message;
-      errorEl.classList.toggle('show', !!message);
-      var fieldEl = inputEl.closest('.login-field');
-      if (message) {
-        fieldEl.classList.remove('shake');
-        void fieldEl.offsetWidth; // restart animation
-        fieldEl.classList.add('shake');
-      }
-    }
-
-    function validate() {
-      var valid = true;
-      var name = nameInput.value.trim();
-      var phone = phoneInput.value.trim();
-
-      if (name.length < 2) {
-        showFieldError(nameInput, nameError, 'Please enter your full name');
-        valid = false;
-      } else {
-        showFieldError(nameInput, nameError, '');
-      }
-
-      if (!/^[6-9]\d{9}$/.test(phone)) {
-        showFieldError(phoneInput, phoneError, 'Enter a valid 10-digit phone number');
-        valid = false;
-      } else {
-        showFieldError(phoneInput, phoneError, '');
-      }
-      return valid;
-    }
-
-    function setLoading(isLoading) {
-      submitBtn.disabled = isLoading;
-      btnSpinner.style.display = isLoading ? 'inline-block' : 'none';
-      btnIcon.style.display = isLoading ? 'none' : 'inline-block';
-      btnLabel.textContent = isLoading ? 'Signing in...' : 'Enter';
-    }
-
     function setStatus(message, isError) {
       statusMsg.textContent = message;
       statusMsg.classList.toggle('error', !!isError);
       statusMsg.classList.toggle('show', !!message);
     }
 
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
+    // 🔧 Shows the "under maintenance" state and disables the form,
+    // instead of letting anyone type in and submit the login.
+    function lockForMaintenance() {
+      loginBrandP.textContent = 'We\u2019re currently doing some maintenance.';
+      setStatus('Please check back a little later. Thanks for your patience!', true);
+      form.querySelectorAll('input').forEach(function (el) { el.disabled = true; });
+      submitBtn.disabled = true;
+      submitBtn.querySelector('#btnLabel').textContent = 'Unavailable';
+    }
 
-      // 🔧 Maintenance check — blocks login before anything else runs.
-      if (MAINTENANCE_MODE) {
-        setStatus('Site is currently under maintenance. Please check back later.', false);
+    function initLoginFlow() {
+      // If already logged in this session, skip the gate entirely.
+      if (SKIP_IF_ALREADY_LOGGED_IN && sessionStorage.getItem('toloba_user_name')) {
+        unlockSite();
         return;
       }
 
-      if (!validate()) return;
+      var nameInput = document.getElementById('nameInput');
+      var phoneInput = document.getElementById('phoneInput');
+      var nameError = document.getElementById('nameError');
+      var phoneError = document.getElementById('phoneError');
+      var btnSpinner = document.getElementById('btnSpinner');
+      var btnIcon = document.getElementById('btnIcon');
+      var btnLabel = document.getElementById('btnLabel');
+      var loginSuccess = document.getElementById('loginSuccess');
+      var welcomeName = document.getElementById('welcomeName');
 
-      var name = nameInput.value.trim();
-      var phone = phoneInput.value.trim();
-
-      setLoading(true);
-      setStatus('', false);
-
-      var sendPromise;
-      if (SCRIPT_URL && SCRIPT_URL.indexOf('PASTE_YOUR') === -1) {
-        sendPromise = fetch(SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ name: name, phone: phone })
-        });
-      } else {
-        // Sheet not connected yet — still let the person into the site,
-        // just don't try to log data anywhere.
-        sendPromise = Promise.resolve();
+      function showWelcome(name) {
+        welcomeName.textContent = ', ' + name.split(' ')[0];
+        loginSuccess.classList.add('show');
+        setTimeout(unlockSite, 1500);
       }
 
-      sendPromise
-        .then(function () {
-          sessionStorage.setItem('toloba_user_name', name);
-          sessionStorage.setItem('toloba_user_phone', phone);
-          setLoading(false);
-          showWelcome(name);
-        })
-        .catch(function () {
-          // Even if the sheet write fails, don't lock the visitor out of the site.
-          sessionStorage.setItem('toloba_user_name', name);
-          sessionStorage.setItem('toloba_user_phone', phone);
-          setLoading(false);
-          showWelcome(name);
-        });
-    });
+      // ambient gold motes
+      var motesContainer = document.getElementById('loginMotes');
+      for (var i = 0; i < 14; i++) {
+        var m = document.createElement('div');
+        var size = 3 + Math.random() * 4;
+        m.className = 'mote';
+        m.style.width = size + 'px';
+        m.style.height = size + 'px';
+        m.style.left = Math.random() * 100 + 'vw';
+        m.style.bottom = '-20px';
+        m.style.animationDuration = (14 + Math.random() * 12) + 's';
+        m.style.animationDelay = (Math.random() * 10) + 's';
+        motesContainer.appendChild(m);
+      }
+
+      phoneInput.addEventListener('input', function () {
+        phoneInput.value = phoneInput.value.replace(/\D/g, '').slice(0, 10);
+      });
+
+      function showFieldError(inputEl, errorEl, message) {
+        errorEl.textContent = message;
+        errorEl.classList.toggle('show', !!message);
+        var fieldEl = inputEl.closest('.login-field');
+        if (message) {
+          fieldEl.classList.remove('shake');
+          void fieldEl.offsetWidth; // restart animation
+          fieldEl.classList.add('shake');
+        }
+      }
+
+      function validate() {
+        var valid = true;
+        var name = nameInput.value.trim();
+        var phone = phoneInput.value.trim();
+
+        if (name.length < 2) {
+          showFieldError(nameInput, nameError, 'Please enter your full name');
+          valid = false;
+        } else {
+          showFieldError(nameInput, nameError, '');
+        }
+
+        if (!/^[6-9]\d{9}$/.test(phone)) {
+          showFieldError(phoneInput, phoneError, 'Enter a valid 10-digit phone number');
+          valid = false;
+        } else {
+          showFieldError(phoneInput, phoneError, '');
+        }
+        return valid;
+      }
+
+      function setLoading(isLoading) {
+        submitBtn.disabled = isLoading;
+        btnSpinner.style.display = isLoading ? 'inline-block' : 'none';
+        btnIcon.style.display = isLoading ? 'none' : 'inline-block';
+        btnLabel.textContent = isLoading ? 'Signing in...' : 'Enter';
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!validate()) return;
+
+        var name = nameInput.value.trim();
+        var phone = phoneInput.value.trim();
+
+        setLoading(true);
+        setStatus('', false);
+
+        var sendPromise;
+        if (SCRIPT_URL && SCRIPT_URL.indexOf('PASTE_YOUR') === -1) {
+          sendPromise = fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ name: name, phone: phone })
+          });
+        } else {
+          // Sheet not connected yet — still let the person into the site,
+          // just don't try to log data anywhere.
+          sendPromise = Promise.resolve();
+        }
+
+        sendPromise
+          .then(function () {
+            sessionStorage.setItem('toloba_user_name', name);
+            sessionStorage.setItem('toloba_user_phone', phone);
+            setLoading(false);
+            showWelcome(name);
+          })
+          .catch(function () {
+            // Even if the sheet write fails, don't lock the visitor out of the site.
+            sessionStorage.setItem('toloba_user_name', name);
+            sessionStorage.setItem('toloba_user_phone', phone);
+            setLoading(false);
+            showWelcome(name);
+          });
+      });
+    }
+
+    // 🔧 MAINTENANCE CHECK — asks the Apps Script whether maintenance mode
+    // is switched on (controlled remotely from admin.html) before deciding
+    // whether to run the normal login flow or lock everyone out.
+    fetch(SCRIPT_URL + '?action=getMaintenance')
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data && data.maintenance) {
+          lockForMaintenance();
+        } else {
+          initLoginFlow();
+        }
+      })
+      .catch(function () {
+        // If the check itself fails (e.g. offline), don't lock visitors out —
+        // just fall back to the normal login flow.
+        initLoginFlow();
+      });
   })();
   </script>
 </body>
